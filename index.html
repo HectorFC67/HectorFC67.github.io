@@ -3,1285 +3,1495 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Portfolio - Game Developer</title>
-        <link href="https://cdn.jsdelivr.net/npm/fontsource-inter@5.1.0/index.css" rel="stylesheet">
+
+        <!-- SEO Meta Tags -->
+        <title>Héctor Fernández — Game Developer Portfolio</title>
+        <meta name="description" content="Game Developer specialised in Unity, Unreal Engine, VR and AI systems. Computer Engineering graduate from University of Deusto. Open to junior positions and internships.">
+        <meta name="keywords" content="game developer, unity, unreal engine, VR, C#, C++, portfolio, España, Basque Country">
+        <meta name="author" content="Héctor Fernández">
+        <meta name="robots" content="index, follow">
+
+        <!-- Open Graph (for LinkedIn, Discord, WhatsApp previews) -->
+        <meta property="og:title" content="Héctor Fernández — Game Developer">
+        <meta property="og:description" content="Creating immersive interactive experiences. Specialised in Unity, Unreal Engine, VR and AI gameplay systems.">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://HectorFC67.github.io">
+
+        <!-- Fonts: Syne (display) + DM Sans (body) -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
         <style>
+            /* ===================== TOKENS ===================== */
             :root {
-                --bg-primary: #0a0a0f;
-                --bg-secondary: #12121a;
-                --bg-card: #1a1a2e;
-                --bg-card-hover: #22223a;
-                --accent: #7c3aed;
-                --accent-light: #a78bfa;
-                --accent-glow: rgba(124, 58, 237, 0.4);
-                --accent-secondary: #06b6d4;
-                --text-primary: #f1f5f9;
-                --text-secondary: #94a3b8;
-                --text-muted: #64748b;
-                --border: rgba(124, 58, 237, 0.2);
-                --gradient-1: linear-gradient(135deg, #7c3aed, #06b6d4);
-                --gradient-2: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+                --bg:           #080810;
+                --bg-2:         #0d0d1a;
+                --bg-card:      #111122;
+                --bg-card-h:    #161630;
+                --ink:          #f0eeff;
+                --ink-2:        #9590b8;
+                --ink-3:        #4d4870;
+                --violet:       #7b5cfa;
+                --violet-dim:   rgba(123,92,250,0.18);
+                --violet-glow:  rgba(123,92,250,0.35);
+                --cyan:         #22d3ee;
+                --pink:         #f472b6;
+                --border:       rgba(123,92,250,0.18);
+                --grad-v:       linear-gradient(135deg,#7b5cfa,#22d3ee);
+                --grad-vp:      linear-gradient(135deg,#7b5cfa,#f472b6);
+                --grad-card:    linear-gradient(160deg, rgba(123,92,250,0.07) 0%, rgba(34,211,238,0.04) 100%);
+                --radius:       16px;
+                --ease:         cubic-bezier(.4,0,.2,1);
             }
 
-            * { margin: 0; padding: 0; box-sizing: border-box; }
+            /* ===================== RESET ===================== */
+            *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
             html { scroll-behavior: smooth; }
             body {
-                font-family: 'Inter', sans-serif;
-                background: var(--bg-primary);
-                color: var(--text-primary);
+                font-family: 'DM Sans', sans-serif;
+                background: var(--bg);
+                color: var(--ink);
                 overflow-x: hidden;
-                line-height: 1.6;
+                line-height: 1.65;
+                cursor: none;
             }
 
-            /* Canvas Background */
+            /* ===================== CUSTOM CURSOR ===================== */
+            #cursor {
+                position: fixed; top:0; left:0; z-index:9999;
+                pointer-events: none;
+            }
+            .cursor-dot {
+                position: absolute; transform: translate(-50%,-50%);
+                width: 8px; height: 8px; border-radius: 50%;
+                background: var(--violet);
+                transition: transform .1s var(--ease), opacity .2s;
+            }
+            .cursor-ring {
+                position: absolute; transform: translate(-50%,-50%);
+                width: 36px; height: 36px; border-radius: 50%;
+                border: 1.5px solid rgba(123,92,250,0.5);
+                transition: transform .18s var(--ease), width .25s var(--ease), height .25s var(--ease), opacity .2s;
+            }
+            body:has(a:hover) .cursor-ring,
+            body:has(button:hover) .cursor-ring { width:52px; height:52px; border-color:var(--violet); }
+            @media (hover:none) { #cursor { display:none; } body { cursor:auto; } }
+
+            /* ===================== NOISE OVERLAY ===================== */
+            body::before {
+                content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+                opacity: 0.025;
+            }
+
+            /* ===================== CANVAS ===================== */
             #particleCanvas {
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                z-index: 0; pointer-events: none;
+                position:fixed; inset:0; z-index:0; pointer-events:none;
             }
 
-            /* Language Toggle */
+            /* ===================== SCROLLBAR ===================== */
+            ::-webkit-scrollbar { width:4px; }
+            ::-webkit-scrollbar-track { background: var(--bg); }
+            ::-webkit-scrollbar-thumb { background: var(--violet); border-radius:2px; }
+
+            /* ===================== LANGUAGE TOGGLE ===================== */
             .lang-toggle {
-                display: flex; gap: 0.5rem; align-items: center;
-                padding: 0.4rem 0.8rem; background: var(--bg-card);
-                border: 1px solid var(--border); border-radius: 8px;
-                cursor: pointer; transition: all 0.3s ease;
+                display:flex; gap:.3rem; align-items:center;
+                padding:.35rem .6rem; background: var(--bg-card);
+                border: 1px solid var(--border); border-radius:10px;
             }
-            .lang-toggle:hover { border-color: var(--accent); }
             .lang-btn {
-                padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.8rem;
-                font-weight: 600; border: none; background: transparent;
-                color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+                padding:.2rem .55rem; border-radius:7px; font-size:.75rem;
+                font-weight:700; border:none; background:transparent;
+                color: var(--ink-3); cursor:pointer; transition:all .2s;
+                font-family:'DM Sans',sans-serif; letter-spacing:.04em;
             }
-            .lang-btn.active {
-                background: var(--accent); color: white;
-            }
-            .lang-btn:not(.active):hover { color: var(--text-primary); }
+            .lang-btn.active { background: var(--violet); color:#fff; }
+            .lang-btn:not(.active):hover { color: var(--ink); }
 
-            /* Navigation */
+            /* ===================== NAV ===================== */
             .navbar {
-                position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-                padding: 1rem 2rem; transition: all 0.4s ease;
-                backdrop-filter: blur(0px);
+                position:fixed; inset:0 0 auto; z-index:1000;
+                padding:1.2rem 2.5rem; transition: all .4s var(--ease);
             }
             .navbar.scrolled {
-                background: rgba(10, 10, 15, 0.85);
-                backdrop-filter: blur(20px);
+                background: rgba(8,8,16,.88);
+                backdrop-filter: blur(24px) saturate(1.4);
                 border-bottom: 1px solid var(--border);
-                padding: 0.7rem 2rem;
+                padding:.8rem 2.5rem;
             }
             .nav-container {
-                max-width: 1200px; margin: 0 auto;
-                display: flex; justify-content: space-between; align-items: center;
+                max-width:1200px; margin:0 auto;
+                display:flex; justify-content:space-between; align-items:center;
             }
             .nav-logo {
-                font-size: 1.5rem; font-weight: 800;
-                background: var(--gradient-1); -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent; background-clip: text;
-                cursor: pointer; text-decoration: none;
+                font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:800;
+                background: var(--grad-v); -webkit-background-clip:text;
+                -webkit-text-fill-color:transparent; background-clip:text;
+                text-decoration:none; letter-spacing:-.02em;
             }
             .nav-links {
-                display: flex; gap: 2rem; list-style: none; align-items: center;
+                display:flex; gap:2rem; list-style:none; align-items:center;
             }
             .nav-links a {
-                color: var(--text-secondary); text-decoration: none;
-                font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease;
-                position: relative;
+                color: var(--ink-2); text-decoration:none;
+                font-size:.88rem; font-weight:500; transition:color .25s;
+                position:relative; letter-spacing:.01em;
             }
             .nav-links a::after {
-                content: ''; position: absolute; bottom: -4px; left: 0;
-                width: 0; height: 2px; background: var(--gradient-1);
-                transition: width 0.3s ease;
+                content:''; position:absolute; bottom:-3px; left:0;
+                width:0; height:1.5px; background: var(--grad-v);
+                transition: width .3s var(--ease);
             }
-            .nav-links a:hover { color: var(--text-primary); }
-            .nav-links a:hover::after { width: 100%; }
+            .nav-links a:hover { color: var(--ink); }
+            .nav-links a:hover::after { width:100%; }
             .nav-cta {
-                padding: 0.5rem 1.2rem; background: var(--gradient-1);
-                color: white !important; border-radius: 8px; font-weight: 600;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                padding:.48rem 1.3rem; background: var(--grad-v);
+                color:#fff !important; border-radius:10px; font-weight:600;
+                transition: transform .3s, box-shadow .3s;
             }
-            .nav-cta:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 20px var(--accent-glow);
-            }
-            .nav-cta::after { display: none !important; }
+            .nav-cta:hover { transform:translateY(-2px); box-shadow:0 6px 24px var(--violet-glow); }
+            .nav-cta::after { display:none !important; }
             .mobile-toggle {
-                display: none; background: none; border: none;
-                color: var(--text-primary); font-size: 1.5rem; cursor: pointer;
+                display:none; background:none; border:none;
+                color: var(--ink); font-size:1.4rem; cursor:pointer;
             }
 
-            /* Sections */
-            section { position: relative; z-index: 1; }
-            .section-padding { padding: 6rem 2rem; }
-            .container { max-width: 1200px; margin: 0 auto; }
-            .section-header { text-align: center; margin-bottom: 4rem; }
+            /* ===================== SECTIONS ===================== */
+            section { position:relative; z-index:1; }
+            .section-pad { padding: 7rem 2.5rem; }
+            .container { max-width:1200px; margin:0 auto; }
+            .section-header { text-align:center; margin-bottom:4.5rem; }
             .section-label {
-                display: inline-block; padding: 0.3rem 1rem;
-                background: rgba(124, 58, 237, 0.15); border: 1px solid var(--border);
-                border-radius: 50px; color: var(--accent-light); font-size: 0.8rem;
-                font-weight: 600; text-transform: uppercase; letter-spacing: 2px;
-                margin-bottom: 1rem;
+                display:inline-block; padding:.3rem 1rem;
+                background: var(--violet-dim); border:1px solid var(--border);
+                border-radius:50px; color: var(--violet); font-size:.72rem;
+                font-weight:700; text-transform:uppercase; letter-spacing:.18em;
+                margin-bottom:1rem; font-family:'Syne',sans-serif;
             }
             .section-title {
-                font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2;
+                font-family:'Syne',sans-serif;
+                font-size:clamp(2rem,4vw,3rem); font-weight:800;
+                margin-bottom:1rem; line-height:1.15; letter-spacing:-.03em;
             }
-            .section-title .gradient-text {
-                background: var(--gradient-1); -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent; background-clip: text;
+            .grad-text {
+                background: var(--grad-v); -webkit-background-clip:text;
+                -webkit-text-fill-color:transparent; background-clip:text;
             }
-            .section-subtitle {
-                color: var(--text-secondary); font-size: 1.1rem;
-                max-width: 600px; margin: 0 auto;
+            .section-sub {
+                color: var(--ink-2); font-size:1.05rem;
+                max-width:560px; margin:0 auto; font-weight:300;
             }
 
-            /* Hero Section */
+            /* ===================== HERO ===================== */
             .hero {
-                min-height: 100vh; display: flex; align-items: center;
-                justify-content: center; position: relative; overflow: hidden;
+                min-height:100vh; display:flex; align-items:center;
+                justify-content:center; position:relative; overflow:hidden;
+            }
+            /* Decorative grid lines */
+            .hero::after {
+                content:''; position:absolute; inset:0; pointer-events:none;
+                background-image:
+                    linear-gradient(rgba(123,92,250,.04) 1px,transparent 1px),
+                    linear-gradient(90deg,rgba(123,92,250,.04) 1px,transparent 1px);
+                background-size:60px 60px;
+                mask-image: radial-gradient(ellipse 80% 60% at 50% 50%,black,transparent);
+            }
+            /* Glowing orbs */
+            .hero-orb {
+                position:absolute; border-radius:50%; filter:blur(80px); pointer-events:none;
+            }
+            .hero-orb-1 {
+                width:500px; height:500px; top:-100px; right:-100px;
+                background: radial-gradient(circle,rgba(123,92,250,.18),transparent 70%);
+                animation: float 8s ease-in-out infinite;
+            }
+            .hero-orb-2 {
+                width:350px; height:350px; bottom:-50px; left:-80px;
+                background: radial-gradient(circle,rgba(34,211,238,.12),transparent 70%);
+                animation: float 10s ease-in-out infinite reverse;
+            }
+            @keyframes float {
+                0%,100%{transform:translateY(0) scale(1)}
+                50%{transform:translateY(-30px) scale(1.04)}
             }
             .hero-content {
-                text-align: center; max-width: 800px; padding: 0 2rem;
+                text-align:center; max-width:820px; padding:0 2rem; position:relative; z-index:2;
             }
             .hero-badge {
-                display: inline-flex; align-items: center; gap: 0.5rem;
-                padding: 0.5rem 1.2rem; background: rgba(124, 58, 237, 0.1);
-                border: 1px solid var(--border); border-radius: 50px;
-                margin-bottom: 2rem; font-size: 0.85rem; color: var(--accent-light);
-                animation: fadeInUp 0.8s ease forwards;
+                display:inline-flex; align-items:center; gap:.6rem;
+                padding:.5rem 1.3rem; background:rgba(123,92,250,.1);
+                border:1px solid var(--border); border-radius:50px;
+                margin-bottom:2.5rem; font-size:.82rem; color: var(--violet);
+                font-weight:600; font-family:'Syne',sans-serif; letter-spacing:.05em;
+                animation: fadeUp .8s var(--ease) forwards;
             }
-            .hero-badge .pulse-dot {
-                width: 8px; height: 8px; background: #22c55e;
-                border-radius: 50%; animation: pulse 2s infinite;
+            .pulse-dot {
+                width:7px; height:7px; background:#22c55e;
+                border-radius:50%; animation:pulse 2s infinite;
+                box-shadow: 0 0 6px #22c55e;
             }
+            @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+
             .hero-title {
-                font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900;
-                line-height: 1.1; margin-bottom: 1.5rem;
-                animation: fadeInUp 0.8s ease 0.2s forwards; opacity: 0;
+                font-family:'Syne',sans-serif;
+                font-size:clamp(3rem,7.5vw,5.5rem); font-weight:800;
+                line-height:1.05; margin-bottom:1.5rem;
+                letter-spacing:-.04em;
+                animation: fadeUp .8s var(--ease) .15s forwards; opacity:0;
             }
-            .hero-title .line { display: block; }
-            .hero-title .highlight {
-                background: var(--gradient-2); -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent; background-clip: text;
+            .hero-title .line { display:block; }
+            .hero-title .name {
+                background: var(--grad-vp); -webkit-background-clip:text;
+                -webkit-text-fill-color:transparent; background-clip:text;
             }
-            .hero-description {
-                font-size: 1.2rem; color: var(--text-secondary);
-                max-width: 600px; margin: 0 auto 2.5rem;
-                animation: fadeInUp 0.8s ease 0.4s forwards; opacity: 0;
+            .hero-title .role {
+                font-size:.38em; color: var(--ink-2); font-weight:400;
+                letter-spacing:.12em; text-transform:uppercase;
+                -webkit-text-fill-color: var(--ink-2);
             }
-            .hero-buttons {
-                display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
-                animation: fadeInUp 0.8s ease 0.6s forwards; opacity: 0;
+
+            /* Typewriter cursor */
+            .typewriter { display:inline; }
+            .tw-cursor {
+                display:inline-block; width:3px; height:.85em;
+                background: var(--violet); vertical-align:middle;
+                animation: blink 1s step-end infinite; margin-left:2px;
+            }
+            @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+            .hero-desc {
+                font-size:1.1rem; color: var(--ink-2); font-weight:300;
+                max-width:580px; margin:0 auto 3rem;
+                animation: fadeUp .8s var(--ease) .3s forwards; opacity:0;
+                line-height:1.75;
+            }
+            .hero-btns {
+                display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;
+                animation: fadeUp .8s var(--ease) .45s forwards; opacity:0;
             }
             .btn {
-                padding: 0.8rem 2rem; border-radius: 12px; font-size: 1rem;
-                font-weight: 600; cursor: pointer; transition: all 0.3s ease;
-                text-decoration: none; display: inline-flex; align-items: center;
-                gap: 0.5rem; border: none; font-family: 'Inter', sans-serif;
+                padding:.85rem 2.2rem; border-radius:12px; font-size:.95rem;
+                font-weight:600; cursor:pointer; transition: all .3s var(--ease);
+                text-decoration:none; display:inline-flex; align-items:center;
+                gap:.55rem; border:none; font-family:'DM Sans',sans-serif;
+                letter-spacing:.01em;
             }
             .btn-primary {
-                background: var(--gradient-1); color: white;
-                box-shadow: 0 4px 20px var(--accent-glow);
+                background: var(--grad-v); color:#fff;
+                box-shadow: 0 4px 20px var(--violet-glow);
             }
-            .btn-primary:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 8px 30px var(--accent-glow);
-            }
+            .btn-primary:hover { transform:translateY(-3px); box-shadow:0 10px 32px var(--violet-glow); }
             .btn-secondary {
-                background: transparent; color: var(--text-primary);
-                border: 1px solid var(--border);
+                background:transparent; color: var(--ink);
+                border:1px solid var(--border);
             }
             .btn-secondary:hover {
-                background: rgba(124, 58, 237, 0.1);
-                border-color: var(--accent); transform: translateY(-3px);
+                background: var(--violet-dim); border-color: var(--violet);
+                transform:translateY(-3px);
             }
+
             .hero-stats {
-                display: flex; justify-content: center; gap: 3rem;
-                margin-top: 4rem; animation: fadeInUp 0.8s ease 0.8s forwards; opacity: 0;
+                display:flex; justify-content:center; gap:4rem;
+                margin-top:5rem;
+                animation: fadeUp .8s var(--ease) .6s forwards; opacity:0;
             }
-            .stat-item { text-align: center; }
-            .stat-number {
-                font-size: 2rem; font-weight: 800; background: var(--gradient-1);
-                -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-                background-clip: text;
+            .stat-item { text-align:center; }
+            .stat-num {
+                font-family:'Syne',sans-serif;
+                font-size:2.2rem; font-weight:800;
+                background: var(--grad-v); -webkit-background-clip:text;
+                -webkit-text-fill-color:transparent; background-clip:text;
+                line-height:1;
             }
-            .stat-label {
-                font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem;
+            .stat-lbl {
+                font-size:.8rem; color: var(--ink-3); margin-top:.4rem;
+                text-transform:uppercase; letter-spacing:.1em;
             }
 
-            /* About Section */
-            .about { background: var(--bg-secondary); }
+            @keyframes fadeUp {
+                from{opacity:0;transform:translateY(28px)}
+                to{opacity:1;transform:translateY(0)}
+            }
+
+            .scroll-cue {
+                position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%);
+                display:flex; flex-direction:column; align-items:center; gap:.5rem;
+                animation: scrollBounce 2.5s ease-in-out infinite;
+            }
+            .scroll-cue span {
+                font-size:.65rem; letter-spacing:.15em; text-transform:uppercase;
+                color: var(--ink-3);
+            }
+            .scroll-cue i { color: var(--ink-3); font-size:.9rem; }
+            @keyframes scrollBounce{
+                0%,100%{transform:translateX(-50%) translateY(0)}
+                50%{transform:translateX(-50%) translateY(8px)}
+            }
+
+            /* ===================== ABOUT ===================== */
+            .about { background: var(--bg-2); }
             .about-grid {
-                display: grid; grid-template-columns: 1fr 1fr;
-                gap: 4rem; align-items: center;
+                display:grid; grid-template-columns:1fr 1fr;
+                gap:5rem; align-items:center;
             }
-            .about-image-wrapper { position: relative; }
-            .about-image {
-                width: 100%; aspect-ratio: 4/5; border-radius: 20px;
-                background: var(--bg-card); border: 1px solid var(--border);
-                overflow: hidden; position: relative;
+            .about-visual { position:relative; }
+            .about-photo-frame {
+                width:100%; aspect-ratio:3/4; border-radius:20px;
+                background: var(--grad-card);
+                border:1px solid var(--border);
+                display:flex; align-items:center; justify-content:center;
+                font-size:5rem; color: var(--violet);
+                position:relative; overflow:hidden;
             }
-            .about-image-placeholder {
-                width: 100%; height: 100%; display: flex;
-                align-items: center; justify-content: center; font-size: 4rem;
-                color: var(--accent);
-                background: linear-gradient(135deg, var(--bg-card) 0%, rgba(124, 58, 237, 0.1) 100%);
+            .about-photo-frame::after {
+                content:''; position:absolute; inset:0;
+                background: linear-gradient(160deg,transparent 60%,rgba(123,92,250,.12));
             }
-            .about-float-card {
-                position: absolute; bottom: -20px; right: -20px;
-                background: var(--bg-card); border: 1px solid var(--border);
-                border-radius: 16px; padding: 1.2rem 1.5rem;
-                display: flex; align-items: center; gap: 1rem;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            .about-badge {
+                position:absolute; bottom:-16px; right:-16px;
+                background: var(--bg-card); border:1px solid var(--border);
+                border-radius:14px; padding:1rem 1.4rem;
+                display:flex; align-items:center; gap:.9rem;
+                box-shadow: 0 12px 40px rgba(0,0,0,.4);
             }
-            .about-float-card .icon-box {
-                width: 48px; height: 48px; border-radius: 12px;
-                background: var(--gradient-1); display: flex;
-                align-items: center; justify-content: center; font-size: 1.2rem;
+            .badge-icon {
+                width:44px; height:44px; border-radius:10px;
+                background: var(--grad-v); display:flex;
+                align-items:center; justify-content:center; font-size:1.1rem; color:#fff;
             }
-            .about-float-card .card-text h4 { font-size: 0.9rem; font-weight: 700; }
-            .about-float-card .card-text p { font-size: 0.75rem; color: var(--text-muted); }
-            .about-text h3 { font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; }
-            .about-text p { color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 1rem; }
-            .about-details {
-                display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem;
-            }
-            .about-detail-item { display: flex; align-items: center; gap: 0.8rem; }
-            .about-detail-item i { color: var(--accent-light); font-size: 0.9rem; }
-            .about-detail-item span { font-size: 0.9rem; color: var(--text-secondary); }
-            .about-detail-item strong { color: var(--text-primary); }
+            .badge-text h4 { font-size:.85rem; font-weight:700; font-family:'Syne',sans-serif; }
+            .badge-text p { font-size:.72rem; color: var(--ink-3); }
 
-            /* Skills Section */
+            /* Decorative ring */
+            .about-ring {
+                position:absolute; top:-30px; left:-30px; width:120px; height:120px;
+                border-radius:50%; border: 1px dashed rgba(123,92,250,.3);
+                animation: spin 20s linear infinite; pointer-events:none;
+            }
+            .about-ring::after {
+                content:''; position:absolute; top:10px; left:10px; right:10px; bottom:10px;
+                border-radius:50%; border: 1px dashed rgba(34,211,238,.2);
+            }
+            @keyframes spin{to{transform:rotate(360deg)}}
+
+            .about-text .section-label { text-align:left; }
+            .about-text h3 {
+                font-family:'Syne',sans-serif;
+                font-size:1.9rem; font-weight:800; margin-bottom:1.2rem;
+                line-height:1.2; letter-spacing:-.03em;
+            }
+            .about-text p { color: var(--ink-2); margin-bottom:1.3rem; font-weight:300; }
+            .about-chips {
+                display:flex; flex-wrap:wrap; gap:.7rem; margin-top:2rem;
+            }
+            .chip {
+                display:flex; align-items:center; gap:.5rem;
+                padding:.45rem 1rem; border-radius:50px;
+                background: var(--violet-dim); border:1px solid var(--border);
+                font-size:.82rem; color: var(--ink-2); font-weight:500;
+            }
+            .chip i { color: var(--violet); font-size:.8rem; }
+
+            /* ===================== SKILLS ===================== */
             .skills-grid {
-                display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-                gap: 1.5rem;
+                display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+                gap:1.4rem;
             }
             .skill-card {
-                background: var(--bg-card); border: 1px solid var(--border);
-                border-radius: 16px; padding: 2rem; transition: all 0.3s ease;
-                position: relative; overflow: hidden;
+                background: var(--grad-card);
+                border:1px solid var(--border); border-radius:var(--radius);
+                padding:1.8rem; transition: all .35s var(--ease);
+                position:relative; overflow:hidden;
             }
             .skill-card::before {
-                content: ''; position: absolute; top: 0; left: 0; right: 0;
-                height: 3px; background: var(--gradient-1); opacity: 0;
-                transition: opacity 0.3s ease;
+                content:''; position:absolute; inset:0 0 auto;
+                height:2px; background: var(--grad-v);
+                transform: scaleX(0); transform-origin:left;
+                transition: transform .4s var(--ease);
             }
-            .skill-card:hover {
-                transform: translateY(-5px); border-color: var(--accent);
-                background: var(--bg-card-hover);
-            }
-            .skill-card:hover::before { opacity: 1; }
-            .skill-card-header {
-                display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+            .skill-card:hover { transform:translateY(-6px); border-color:rgba(123,92,250,.4); }
+            .skill-card:hover::before { transform:scaleX(1); }
+            .skill-head {
+                display:flex; align-items:center; gap:1rem; margin-bottom:1.4rem;
             }
             .skill-icon {
-                width: 50px; height: 50px; border-radius: 12px;
-                background: rgba(124, 58, 237, 0.15); display: flex;
-                align-items: center; justify-content: center; font-size: 1.3rem;
-                color: var(--accent-light);
+                width:48px; height:48px; border-radius:12px;
+                background: var(--violet-dim); border:1px solid var(--border);
+                display:flex; align-items:center; justify-content:center;
+                font-size:1.2rem; color: var(--violet); flex-shrink:0;
             }
-            .skill-card-header h3 { font-size: 1.1rem; font-weight: 700; }
-            .skill-card-header p { font-size: 0.8rem; color: var(--text-muted); }
-            .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+            .skill-head h3 { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:700; }
+            .skill-head p { font-size:.78rem; color: var(--ink-3); }
+            .skill-tags { display:flex; flex-wrap:wrap; gap:.45rem; }
             .skill-tag {
-                padding: 0.35rem 0.8rem; background: rgba(124, 58, 237, 0.1);
-                border: 1px solid rgba(124, 58, 237, 0.2); border-radius: 8px;
-                font-size: 0.8rem; color: var(--text-secondary); transition: all 0.3s ease;
+                padding:.3rem .75rem; background:rgba(123,92,250,.08);
+                border:1px solid rgba(123,92,250,.15); border-radius:8px;
+                font-size:.78rem; color: var(--ink-2);
+                transition: all .25s var(--ease);
             }
-            .skill-tag:hover { background: rgba(124, 58, 237, 0.2); color: var(--accent-light); }
+            .skill-tag:hover { background: var(--violet-dim); color: var(--violet); border-color:rgba(123,92,250,.4); }
 
-            /* Projects Section */
-            .projects { background: var(--bg-secondary); }
+            /* ===================== PROJECTS ===================== */
+            .projects { background: var(--bg-2); }
             .projects-grid {
-                display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-                gap: 2rem;
+                display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+                gap:2rem;
             }
-            .project-card {
-                background: var(--bg-card); border: 1px solid var(--border);
-                border-radius: 20px; overflow: hidden; transition: all 0.4s ease;
-                cursor: pointer;
+            .proj-card {
+                background: var(--bg-card);
+                border:1px solid var(--border); border-radius:20px;
+                overflow:hidden; transition: all .4s var(--ease);
+                position:relative;
             }
-            .project-card:hover {
-                transform: translateY(-8px); border-color: var(--accent);
-                box-shadow: 0 20px 60px rgba(124, 58, 237, 0.15);
+            .proj-card:hover { transform:translateY(-10px); border-color:rgba(123,92,250,.45); box-shadow:0 24px 60px rgba(0,0,0,.4), 0 0 0 1px rgba(123,92,250,.1); }
+            .proj-thumb {
+                width:100%; height:230px; position:relative; overflow:hidden;
             }
-            .project-image { width: 100%; height: 220px; position: relative; overflow: hidden; }
-            .project-image-bg {
-                width: 100%; height: 100%; display: flex;
-                align-items: center; justify-content: center; font-size: 3rem;
-                transition: transform 0.4s ease;
+            .proj-bg {
+                width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+                font-size:3.5rem; transition: transform .5s var(--ease);
+                position:relative;
             }
-            .project-card:hover .project-image-bg { transform: scale(1.05); }
-            .project-image-bg.img-1 { background: linear-gradient(135deg, #1a1a2e, #2d1b69); color: #7c3aed; }
-            .project-image-bg.img-2 { background: linear-gradient(135deg, #1a2e1a, #1b692d); color: #22c55e; }
-            .project-image-bg.img-3 { background: linear-gradient(135deg, #2e1a1a, #691b1b); color: #ef4444; }
-            .project-overlay {
-                position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(0, 0, 0, 0.6); display: flex;
-                align-items: center; justify-content: center; gap: 1rem;
-                opacity: 0; transition: opacity 0.3s ease;
+            .proj-bg::after {
+                content:''; position:absolute; inset:0;
+                background: linear-gradient(to top, var(--bg-card) 0%, transparent 50%);
             }
-            .project-card:hover .project-overlay { opacity: 1; }
-            .project-overlay-btn {
-                width: 45px; height: 45px; border-radius: 50%;
-                background: var(--accent); color: white; display: flex;
-                align-items: center; justify-content: center; font-size: 1rem;
-                transition: transform 0.3s ease; text-decoration: none;
+            .proj-card:hover .proj-bg { transform:scale(1.07); }
+            .proj-bg.p1 { background:linear-gradient(135deg,#0e0826,#2a1060); color:#9b7ff4; }
+            .proj-bg.p2 { background:linear-gradient(135deg,#051a0e,#0a3d1f); color:#34d399; }
+            .proj-bg.p3 { background:linear-gradient(135deg,#1a0505,#3d0a0a); color:#f87171; }
+            .proj-links {
+                position:absolute; top:1rem; right:1rem; display:flex; gap:.5rem; z-index:2;
+                opacity:0; transform:translateY(-6px); transition: all .3s var(--ease);
             }
-            .project-overlay-btn:hover { transform: scale(1.1); }
-            .project-info { padding: 1.5rem; }
-            .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
-            .project-tag {
-                padding: 0.2rem 0.6rem; background: rgba(6, 182, 212, 0.15);
-                border-radius: 6px; font-size: 0.7rem; color: var(--accent-secondary);
-                font-weight: 600;
+            .proj-card:hover .proj-links { opacity:1; transform:translateY(0); }
+            .proj-link-btn {
+                width:38px; height:38px; border-radius:10px;
+                background:rgba(0,0,0,.5); backdrop-filter:blur(10px);
+                border:1px solid rgba(255,255,255,.12);
+                color:#fff; display:flex; align-items:center; justify-content:center;
+                font-size:.85rem; text-decoration:none;
+                transition: background .25s, transform .25s;
             }
-            .project-info h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
-            .project-info p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
-            .project-footer {
-                display: flex; justify-content: space-between; align-items: center;
-                padding: 1rem 1.5rem; border-top: 1px solid var(--border);
+            .proj-link-btn:hover { background: var(--violet); transform:scale(1.08); }
+            .proj-body { padding:1.5rem; }
+            .proj-tags { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.9rem; }
+            .proj-tag {
+                padding:.18rem .6rem; background:rgba(34,211,238,.1);
+                border-radius:6px; font-size:.7rem; color: var(--cyan);
+                font-weight:600; letter-spacing:.03em; text-transform:uppercase;
             }
-            .project-footer span { font-size: 0.8rem; color: var(--text-muted); }
-            .project-footer .tech-stack { display: flex; gap: 0.5rem; }
-            .project-footer .tech-stack i {
-                color: var(--text-muted); font-size: 1rem; transition: color 0.3s ease;
+            .proj-body h3 { font-family:'Syne',sans-serif; font-size:1.15rem; font-weight:700; margin-bottom:.5rem; letter-spacing:-.02em; }
+            .proj-body p { color: var(--ink-2); font-size:.88rem; line-height:1.6; font-weight:300; }
+            .proj-foot {
+                display:flex; justify-content:space-between; align-items:center;
+                padding:.9rem 1.5rem; border-top:1px solid var(--border);
             }
-            .project-footer .tech-stack i:hover { color: var(--accent-light); }
+            .proj-foot span { font-size:.78rem; color: var(--ink-3); display:flex; align-items:center; gap:.4rem; }
+            .proj-foot span i { color: var(--violet); }
+            .tech-icons { display:flex; gap:.6rem; }
+            .tech-icons i { color: var(--ink-3); font-size:.95rem; transition:color .25s; }
+            .tech-icons i:hover { color: var(--violet); }
 
-            /* Experience Section */
-            .timeline { max-width: 800px; margin: 0 auto; position: relative; }
+            /* ===================== TIMELINE ===================== */
+            .timeline { max-width:780px; margin:0 auto; position:relative; }
             .timeline::before {
-                content: ''; position: absolute; left: 20px; top: 0; bottom: 0;
-                width: 2px; background: var(--border);
+                content:''; position:absolute; left:22px; top:0; bottom:0;
+                width:1px; background:linear-gradient(to bottom,transparent,var(--border) 10%,var(--border) 90%,transparent);
             }
-            .timeline-item {
-                position: relative; padding-left: 60px; margin-bottom: 3rem;
+            .tl-item { position:relative; padding-left:64px; margin-bottom:2.8rem; }
+            .tl-dot {
+                position:absolute; left:14px; top:6px;
+                width:16px; height:16px; border-radius:50%;
+                background: var(--bg); border:2px solid var(--violet); z-index:1;
+                transition: box-shadow .3s;
             }
-            .timeline-dot {
-                position: absolute; left: 12px; top: 5px; width: 18px; height: 18px;
-                border-radius: 50%; background: var(--bg-primary);
-                border: 3px solid var(--accent); z-index: 1;
+            .tl-item:hover .tl-dot { box-shadow:0 0 14px var(--violet-glow); }
+            .tl-item:first-child .tl-dot { background: var(--violet); box-shadow:0 0 16px var(--violet-glow); }
+            .tl-card {
+                background: var(--grad-card); border:1px solid var(--border);
+                border-radius:var(--radius); padding:1.5rem;
+                transition: all .3s var(--ease);
             }
-            .timeline-item:first-child .timeline-dot {
-                background: var(--accent); box-shadow: 0 0 20px var(--accent-glow);
+            .tl-card:hover { border-color:rgba(123,92,250,.4); transform:translateX(6px); }
+            .tl-date {
+                display:inline-block; padding:.2rem .75rem;
+                background: var(--violet-dim); border-radius:6px;
+                font-size:.72rem; color: var(--violet); font-weight:700;
+                font-family:'Syne',sans-serif; letter-spacing:.08em;
+                margin-bottom:.75rem;
             }
-            .timeline-content {
-                background: var(--bg-card); border: 1px solid var(--border);
-                border-radius: 16px; padding: 1.5rem; transition: all 0.3s ease;
-            }
-            .timeline-content:hover { border-color: var(--accent); transform: translateX(5px); }
-            .timeline-date {
-                display: inline-block; padding: 0.2rem 0.8rem;
-                background: rgba(124, 58, 237, 0.15); border-radius: 6px;
-                font-size: 0.75rem; color: var(--accent-light); font-weight: 600;
-                margin-bottom: 0.8rem;
-            }
-            .timeline-content h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.3rem; }
-            .timeline-content h4 {
-                color: var(--accent-secondary); font-size: 0.9rem;
-                font-weight: 600; margin-bottom: 0.8rem;
-            }
-            .timeline-content p { color: var(--text-secondary); font-size: 0.9rem; }
+            .tl-card h3 { font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:700; margin-bottom:.3rem; letter-spacing:-.01em; }
+            .tl-card h4 { color: var(--cyan); font-size:.85rem; font-weight:600; margin-bottom:.75rem; }
+            .tl-card p { color: var(--ink-2); font-size:.88rem; font-weight:300; }
 
-            /* Contact Section */
-            .contact { background: var(--bg-secondary); }
-            .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
-            .contact-info h3 { font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; }
-            .contact-info > p { color: var(--text-secondary); margin-bottom: 2rem; }
-            .contact-methods { display: flex; flex-direction: column; gap: 1.5rem; }
-            .contact-method { display: flex; align-items: center; gap: 1rem; }
-            .contact-method-icon {
-                width: 50px; height: 50px; border-radius: 12px;
-                background: rgba(124, 58, 237, 0.15); display: flex;
-                align-items: center; justify-content: center; color: var(--accent-light);
-                font-size: 1.1rem; flex-shrink: 0;
+            /* ===================== CONTACT ===================== */
+            .contact { background: var(--bg-2); }
+            .contact-grid { display:grid; grid-template-columns:1fr 1.1fr; gap:3.5rem; }
+            .contact-info h3 {
+                font-family:'Syne',sans-serif;
+                font-size:1.7rem; font-weight:800; margin-bottom:1rem; letter-spacing:-.03em;
             }
-            .contact-method-text h4 { font-size: 0.9rem; font-weight: 600; }
-            .contact-method-text p { font-size: 0.85rem; color: var(--text-secondary); }
-            .social-links { display: flex; gap: 1rem; margin-top: 2rem; }
-            .social-link {
-                width: 45px; height: 45px; border-radius: 12px;
-                background: var(--bg-card); border: 1px solid var(--border);
-                display: flex; align-items: center; justify-content: center;
-                color: var(--text-secondary); font-size: 1.1rem; text-decoration: none;
-                transition: all 0.3s ease;
+            .contact-info > p { color: var(--ink-2); margin-bottom:2rem; font-weight:300; }
+            .c-methods { display:flex; flex-direction:column; gap:1.3rem; }
+            .c-method { display:flex; align-items:center; gap:.9rem; text-decoration:none; color:inherit; }
+            .c-method-icon {
+                width:46px; height:46px; border-radius:12px;
+                background: var(--violet-dim); border:1px solid var(--border);
+                display:flex; align-items:center; justify-content:center;
+                color: var(--violet); font-size:1rem; flex-shrink:0;
+                transition: all .25s;
             }
-            .social-link:hover {
-                background: var(--accent); color: white;
-                border-color: var(--accent); transform: translateY(-3px);
+            .c-method:hover .c-method-icon { background: var(--violet); color:#fff; }
+            .c-method-txt h4 { font-size:.88rem; font-weight:600; font-family:'Syne',sans-serif; }
+            .c-method-txt p { font-size:.82rem; color: var(--ink-2); }
+            .social-row { display:flex; gap:.8rem; margin-top:2rem; }
+            .social-btn {
+                width:44px; height:44px; border-radius:12px;
+                background: var(--bg-card); border:1px solid var(--border);
+                display:flex; align-items:center; justify-content:center;
+                color: var(--ink-2); font-size:1.05rem; text-decoration:none;
+                transition: all .3s var(--ease);
             }
-            .contact-form {
-                background: var(--bg-card); border: 1px solid var(--border);
-                border-radius: 20px; padding: 2rem;
+            .social-btn:hover { background: var(--violet); color:#fff; border-color: var(--violet); transform:translateY(-3px); }
+
+            /* Contact Form */
+            .c-form {
+                background: var(--grad-card); border:1px solid var(--border);
+                border-radius:20px; padding:2.2rem;
             }
-            .form-group { margin-bottom: 1.5rem; }
-            .form-group label {
-                display: block; font-size: 0.85rem; font-weight: 600;
-                margin-bottom: 0.5rem; color: var(--text-secondary);
+            .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+            .form-grp { margin-bottom:1.3rem; }
+            .form-grp label {
+                display:block; font-size:.8rem; font-weight:600;
+                margin-bottom:.45rem; color: var(--ink-2);
+                letter-spacing:.04em; text-transform:uppercase; font-family:'Syne',sans-serif;
             }
-            .form-group input, .form-group textarea {
-                width: 100%; padding: 0.8rem 1rem; background: var(--bg-secondary);
-                border: 1px solid var(--border); border-radius: 10px;
-                color: var(--text-primary); font-family: 'Inter', sans-serif;
-                font-size: 0.9rem; transition: border-color 0.3s ease; outline: none;
+            .form-grp input, .form-grp textarea {
+                width:100%; padding:.8rem 1rem;
+                background: rgba(0,0,0,.3);
+                border:1px solid var(--border); border-radius:10px;
+                color: var(--ink); font-family:'DM Sans',sans-serif;
+                font-size:.9rem; transition: border-color .25s; outline:none;
+                font-weight:400;
             }
-            .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
-            .form-group textarea { resize: vertical; min-height: 120px; }
-            .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+            .form-grp input::placeholder, .form-grp textarea::placeholder { color: var(--ink-3); }
+            .form-grp input:focus, .form-grp textarea:focus { border-color: var(--violet); }
+            .form-grp textarea { resize:vertical; min-height:120px; }
             .btn-submit {
-                width: 100%; padding: 0.9rem; background: var(--gradient-1);
-                color: white; border: none; border-radius: 12px; font-size: 1rem;
-                font-weight: 700; cursor: pointer; transition: all 0.3s ease;
-                font-family: 'Inter', sans-serif;
+                width:100%; padding:.9rem; background: var(--grad-v);
+                color:#fff; border:none; border-radius:12px; font-size:.95rem;
+                font-weight:700; cursor:pointer; transition: all .3s var(--ease);
+                font-family:'Syne',sans-serif; letter-spacing:.04em;
+                display:flex; align-items:center; justify-content:center; gap:.6rem;
             }
-            .btn-submit:hover {
-                transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow);
-            }
+            .btn-submit:hover { transform:translateY(-2px); box-shadow:0 10px 32px var(--violet-glow); }
 
-            /* Footer */
-            .footer {
-                position: relative; z-index: 1; padding: 3rem 2rem;
-                border-top: 1px solid var(--border); text-align: center;
+            /* ===================== FOOTER ===================== */
+            footer {
+                position:relative; z-index:1; padding:2.5rem;
+                border-top:1px solid var(--border); text-align:center;
             }
-            .footer p { color: var(--text-muted); font-size: 0.85rem; }
-            .footer .gradient-text {
-                background: var(--gradient-1); -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent; background-clip: text;
-                font-weight: 700;
-            }
+            footer p { color: var(--ink-3); font-size:.82rem; }
+            footer .g { background: var(--grad-v); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-weight:700; }
 
-            /* Animations */
-            @keyframes fadeInUp {
-                from { opacity: 0; transform: translateY(30px); }
-                to { opacity: 1; transform: translateY(0); }
+            /* ===================== BACK TO TOP ===================== */
+            .back-top {
+                position:fixed; bottom:2rem; right:2rem;
+                width:44px; height:44px; border-radius:12px;
+                background: var(--violet); color:#fff; display:flex;
+                align-items:center; justify-content:center;
+                cursor:pointer; border:none; font-size:1rem;
+                opacity:0; visibility:hidden; transition: all .3s var(--ease); z-index:999;
+                box-shadow: 0 4px 16px var(--violet-glow);
             }
-            @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+            .back-top.show { opacity:1; visibility:visible; }
+            .back-top:hover { transform:translateY(-3px); box-shadow:0 8px 28px var(--violet-glow); }
+
+            /* ===================== FADE IN ===================== */
             .fade-in {
-                opacity: 0; transform: translateY(40px);
-                transition: all 0.8s ease;
+                opacity:0; transform:translateY(36px);
+                transition: opacity .8s var(--ease), transform .8s var(--ease);
             }
-            .fade-in.visible { opacity: 1; transform: translateY(0); }
+            .fade-in.visible { opacity:1; transform:translateY(0); }
 
-            /* Responsive */
-            @media (max-width: 768px) {
-                .mobile-toggle { display: block; }
+            /* ===================== MOBILE NAV ===================== */
+            @media(max-width:768px){
+                .mobile-toggle { display:block; }
                 .nav-links {
-                    position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
-                    background: var(--bg-secondary); flex-direction: column;
-                    padding: 5rem 2rem 2rem; gap: 1.5rem; transition: right 0.4s ease;
-                    border-left: 1px solid var(--border);
+                    position:fixed; top:0; right:-100%; width:280px; height:100vh;
+                    background: var(--bg-2); flex-direction:column;
+                    padding:5rem 2rem 2rem; gap:1.5rem;
+                    transition: right .4s var(--ease);
+                    border-left:1px solid var(--border); z-index:1001;
                 }
-                .nav-links.active { right: 0; }
+                .nav-links.open { right:0; }
                 .mobile-close {
-                    position: absolute; top: 1.5rem; right: 1.5rem;
-                    background: none; border: none; color: var(--text-primary);
-                    font-size: 1.5rem; cursor: pointer;
+                    position:absolute; top:1.5rem; right:1.5rem;
+                    background:none; border:none; color: var(--ink);
+                    font-size:1.4rem; cursor:pointer;
                 }
-                .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-                .about-float-card { right: 10px; bottom: -10px; }
-                .contact-grid { grid-template-columns: 1fr; }
-                .hero-stats { gap: 1.5rem; }
-                .stat-number { font-size: 1.5rem; }
-                .skills-grid { grid-template-columns: 1fr; }
-                .projects-grid { grid-template-columns: 1fr; }
-                .form-row { grid-template-columns: 1fr; }
-                .about-details { grid-template-columns: 1fr; }
+                .about-grid { grid-template-columns:1fr; gap:2.5rem; }
+                .about-badge { right:8px; bottom:-12px; }
+                .contact-grid { grid-template-columns:1fr; }
+                .form-row { grid-template-columns:1fr; }
+                .hero-stats { gap:2rem; }
+                .stat-num { font-size:1.7rem; }
+                .skills-grid, .projects-grid { grid-template-columns:1fr; }
+                .section-pad { padding:5rem 1.5rem; }
             }
 
-            /* Scroll indicator */
-            .scroll-indicator {
-                position: absolute; bottom: 2rem; left: 50%;
-                transform: translateX(-50%); animation: bounce 2s infinite;
+            /* ===================== VIDEO MODAL ===================== */
+            .video-modal-overlay {
+                position:fixed; inset:0; z-index:9000;
+                background: rgba(0,0,0,0); backdrop-filter: blur(0px);
+                display:flex; align-items:center; justify-content:center;
+                padding:1.5rem;
+                opacity:0; visibility:hidden;
+                transition: opacity .35s var(--ease), backdrop-filter .35s var(--ease), background .35s var(--ease);
             }
-            .scroll-indicator i { color: var(--text-muted); font-size: 1.5rem; }
-            @keyframes bounce {
-                0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-                40% { transform: translateX(-50%) translateY(-10px); }
-                60% { transform: translateX(-50%) translateY(-5px); }
+            .video-modal-overlay.open {
+                opacity:1; visibility:visible;
+                background: rgba(0,0,0,.85); backdrop-filter: blur(16px);
+            }
+            .video-modal {
+                position:relative; width:100%; max-width:900px;
+                background: var(--bg-card);
+                border:1px solid rgba(123,92,250,.35);
+                border-radius:20px; overflow:hidden;
+                box-shadow: 0 40px 100px rgba(0,0,0,.7), 0 0 0 1px rgba(123,92,250,.1);
+                transform: scale(.92) translateY(20px);
+                transition: transform .4s var(--ease);
+            }
+            .video-modal-overlay.open .video-modal { transform: scale(1) translateY(0); }
+
+            /* Header bar inside modal */
+            .video-modal-header {
+                display:flex; align-items:center; justify-content:space-between;
+                padding:.9rem 1.3rem;
+                background: linear-gradient(90deg, rgba(123,92,250,.12), rgba(34,211,238,.06));
+                border-bottom:1px solid var(--border);
+            }
+            .video-modal-title {
+                display:flex; align-items:center; gap:.7rem;
+                font-family:'Syne',sans-serif; font-size:.95rem; font-weight:700;
+            }
+            .video-modal-title i { color: var(--violet); }
+            .video-modal-tags { display:flex; gap:.4rem; }
+            .video-modal-tag {
+                padding:.15rem .55rem; background:rgba(34,211,238,.1);
+                border-radius:5px; font-size:.68rem; color: var(--cyan);
+                font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+            }
+            .video-modal-close {
+                width:34px; height:34px; border-radius:9px;
+                background: rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.1);
+                color: var(--ink-2); display:flex; align-items:center; justify-content:center;
+                cursor:pointer; font-size:.9rem; transition: all .2s;
+                flex-shrink:0;
+            }
+            .video-modal-close:hover { background: rgba(239,68,68,.2); color:#ef4444; border-color:rgba(239,68,68,.3); }
+
+            /* Video wrapper — enforces 16:9 */
+            .video-wrap {
+                position:relative; padding-bottom:56.25%; height:0; background:#000;
+            }
+            .video-wrap video {
+                position:absolute; inset:0; width:100%; height:100%;
+                object-fit:contain;
             }
 
-            /* Back to top button */
-            .back-to-top {
-                position: fixed; bottom: 2rem; right: 2rem;
-                width: 45px; height: 45px; border-radius: 12px;
-                background: var(--accent); color: white; display: flex;
-                align-items: center; justify-content: center; cursor: pointer;
-                border: none; font-size: 1.1rem; opacity: 0; visibility: hidden;
-                transition: all 0.3s ease; z-index: 999;
+            /* No-video placeholder (shown when src is placeholder) */
+            .video-placeholder {
+                position:absolute; inset:0;
+                display:flex; flex-direction:column; align-items:center; justify-content:center;
+                gap:1rem; color: var(--ink-3); font-size:.9rem;
+                background: linear-gradient(135deg,#0e0826,#1a0a40);
             }
-            .back-to-top.visible { opacity: 1; visibility: visible; }
-            .back-to-top:hover {
-                transform: translateY(-3px); box-shadow: 0 8px 25px var(--accent-glow);
+            .video-placeholder i { font-size:3rem; color: var(--violet); opacity:.5; }
+            .video-placeholder p { max-width:300px; text-align:center; line-height:1.5; }
+            .video-placeholder code {
+                background: rgba(123,92,250,.15); border:1px solid var(--border);
+                border-radius:6px; padding:.2rem .5rem; font-size:.8rem; color: var(--violet);
             }
+
+            /* Footer bar inside modal */
+            .video-modal-footer {
+                display:flex; align-items:center; justify-content:space-between;
+                padding:.8rem 1.3rem; border-top:1px solid var(--border);
+                flex-wrap:wrap; gap:.5rem;
+            }
+            .video-modal-footer p { font-size:.78rem; color: var(--ink-3); }
+            .video-modal-footer a {
+                display:inline-flex; align-items:center; gap:.4rem;
+                padding:.4rem .9rem; border-radius:8px;
+                background: var(--violet-dim); border:1px solid var(--border);
+                color: var(--violet); font-size:.78rem; font-weight:600;
+                text-decoration:none; transition: all .25s;
+                font-family:'Syne',sans-serif;
+            }
+            .video-modal-footer a:hover { background: var(--violet); color:#fff; }
+
+            /* Play button overlay on Rise of Darkness card thumbnail */
+            .play-trigger {
+                position:absolute; inset:0; display:flex;
+                align-items:center; justify-content:center;
+                background: rgba(0,0,0,0); transition: background .3s;
+                cursor:pointer; z-index:3;
+            }
+            .play-trigger:hover { background: rgba(0,0,0,.35); }
+            .play-btn-circle {
+                width:60px; height:60px; border-radius:50%;
+                background: rgba(123,92,250,.9); backdrop-filter:blur(8px);
+                border:2px solid rgba(255,255,255,.25);
+                display:flex; align-items:center; justify-content:center;
+                color:#fff; font-size:1.3rem; padding-left:3px;
+                box-shadow: 0 0 30px rgba(123,92,250,.6);
+                transform: scale(.85); opacity:0;
+                transition: transform .3s var(--ease), opacity .3s var(--ease);
+            }
+            .play-trigger:hover .play-btn-circle { transform:scale(1); opacity:1; }
+
+            /* Trailer badge on the thumbnail */
+            .trailer-badge {
+                position:absolute; top:.8rem; left:.8rem; z-index:4;
+                display:flex; align-items:center; gap:.4rem;
+                padding:.3rem .75rem; border-radius:50px;
+                background: rgba(0,0,0,.55); backdrop-filter:blur(8px);
+                border:1px solid rgba(255,255,255,.15);
+                font-size:.7rem; font-weight:700; color:#fff;
+                font-family:'Syne',sans-serif; letter-spacing:.06em;
+                text-transform:uppercase;
+            }
+            .trailer-badge i { color: var(--pink); font-size:.65rem; }
         </style>
     </head>
     <body>
-        <canvas id="particleCanvas"></canvas>
 
-        <!-- Navigation -->
-        <nav class="navbar" id="navbar">
-            <div class="nav-container">
-                <a href="#hero" class="nav-logo">&lt;DevGame /&gt;</a>
-                <ul class="nav-links" id="navLinks">
-                    <button class="mobile-close" id="navClose"><i class="fas fa-times"></i></button>
-                    <li><a href="#about" onclick="closeNav()" data-i18n="nav_about">About</a></li>
-                    <li><a href="#skills" onclick="closeNav()" data-i18n="nav_skills">Skills</a></li>
-                    <li><a href="#projects" onclick="closeNav()" data-i18n="nav_projects">Projects</a></li>
-                    <li><a href="#experience" onclick="closeNav()" data-i18n="nav_experience">Education</a></li>
-                    <li><a href="#contact" class="nav-cta" onclick="closeNav()" data-i18n="nav_contact">Contact</a></li>
-                    <li>
-                        <div class="lang-toggle" id="langToggle">
-                            <button class="lang-btn active" data-lang="en">EN</button>
-                            <button class="lang-btn" data-lang="es">ES</button>
-                        </div>
-                    </li>
-                </ul>
-                <button class="mobile-toggle" id="navToggle"><i class="fas fa-bars"></i></button>
-            </div>
-        </nav>
+    <!-- Custom cursor -->
+    <div id="cursor">
+        <div class="cursor-dot" id="cursorDot"></div>
+        <div class="cursor-ring" id="cursorRing"></div>
+    </div>
 
-        <!-- Hero Section -->
-        <section class="hero" id="hero">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <span class="pulse-dot"></span>
-                    <span data-i18n="hero_badge">Open to new opportunities</span>
-                </div>
-                <h1 class="hero-title">
-                    <span class="line" data-i18n="hero_greeting">Hi, I'm</span>
-                    <span class="line highlight" data-i18n="hero_name">Héctor Fernández</span>
-                    <span class="line" style="font-size: 0.6em; color: var(--text-secondary);" data-i18n="hero_role">Game Developer</span>
-                </h1>
-                <p class="hero-description" data-i18n="hero_desc">
-                    Creating immersive interactive experiences with passion for programming, design, and storytelling. Specialized in Unity and Unreal Engine with a focus on gameplay systems, procedural generation and AI.
-                </p>
-                <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary">
-                        <i class="fas fa-gamepad"></i> <span data-i18n="btn_projects">View Projects</span>
-                    </a>
-                    <a href="#contact" class="btn btn-secondary">
-                        <i class="fas fa-envelope"></i> <span data-i18n="btn_contact">Get in Touch</span>
-                    </a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="4">0</div>
-                        <div class="stat-label" data-i18n="stat_years">Years Learning</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="8">0</div>
-                        <div class="stat-label" data-i18n="stat_projects">Personal Projects</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" data-count="2">0</div>
-                        <div class="stat-label" data-i18n="stat_degrees">Degrees</div>
-                    </div>
-                </div>
-            </div>
-            <div class="scroll-indicator">
-                <i class="fas fa-chevron-down"></i>
-            </div>
-        </section>
+    <!-- Particle canvas -->
+    <canvas id="particleCanvas"></canvas>
 
-        <!-- About Section -->
-        <section class="about section-padding" id="about">
-            <div class="container">
-                <div class="about-grid">
-                    <div class="about-image-wrapper fade-in">
-                        <div class="about-image">
-                            <div class="about-image-placeholder">
-                                <i class="fas fa-user-astronaut"></i>
-                            </div>
-                        </div>
-                        <div class="about-float-card">
-                            <div class="icon-box"><i class="fas fa-vr-cardboard"></i></div>
-                            <div class="card-text">
-                                <h4 data-i18n="about_card_title">VR Specialist</h4>
-                                <p data-i18n="about_card_desc">Immersive experiences</p>
-                            </div>
+    <!-- ==================== NAV ==================== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#hero" class="nav-logo">&lt;HFC /&gt;</a>
+            <ul class="nav-links" id="navLinks">
+                <button class="mobile-close" id="navClose"><i class="fas fa-times"></i></button>
+                <li><a href="#about"      onclick="closeNav()" data-i18n="nav_about">About</a></li>
+                <li><a href="#skills"     onclick="closeNav()" data-i18n="nav_skills">Skills</a></li>
+                <li><a href="#projects"   onclick="closeNav()" data-i18n="nav_projects">Projects</a></li>
+                <li><a href="#education"  onclick="closeNav()" data-i18n="nav_edu">Education</a></li>
+                <li><a href="#contact" class="nav-cta" onclick="closeNav()" data-i18n="nav_contact">Contact</a></li>
+                <li>
+                    <div class="lang-toggle">
+                        <button class="lang-btn active" data-lang="en">EN</button>
+                        <button class="lang-btn" data-lang="es">ES</button>
+                    </div>
+                </li>
+            </ul>
+            <button class="mobile-toggle" id="navToggle"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO ==================== -->
+    <section class="hero" id="hero">
+        <div class="hero-orb hero-orb-1"></div>
+        <div class="hero-orb hero-orb-2"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="pulse-dot"></span>
+                <span data-i18n="hero_badge">Open to new opportunities</span>
+            </div>
+            <h1 class="hero-title">
+                <span class="line" data-i18n="hero_greeting">Hi, I'm</span>
+                <span class="line name">Héctor Fernández</span>
+                <span class="line role"><span class="typewriter" id="typewriter"></span><span class="tw-cursor"></span></span>
+            </h1>
+            <p class="hero-desc" data-i18n="hero_desc">
+                Creating immersive interactive experiences with passion for programming, design, and storytelling. Specialised in Unity and Unreal Engine — focused on gameplay systems, procedural generation and AI.
+            </p>
+            <div class="hero-btns">
+                <a href="#projects" class="btn btn-primary"><i class="fas fa-gamepad"></i><span data-i18n="btn_projects">View Projects</span></a>
+                <a href="#contact"  class="btn btn-secondary"><i class="fas fa-envelope"></i><span data-i18n="btn_contact">Get in Touch</span></a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item"><div class="stat-num" data-count="4">0</div><div class="stat-lbl" data-i18n="stat_years">Years Learning</div></div>
+                <div class="stat-item"><div class="stat-num" data-count="8">0</div><div class="stat-lbl" data-i18n="stat_projects">Projects</div></div>
+                <div class="stat-item"><div class="stat-num" data-count="2">0</div><div class="stat-lbl" data-i18n="stat_degrees">Degrees</div></div>
+            </div>
+        </div>
+        <div class="scroll-cue"><span data-i18n="scroll_cue">scroll</span><i class="fas fa-chevron-down"></i></div>
+    </section>
+
+    <!-- ==================== ABOUT ==================== -->
+    <section class="about section-pad" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-visual fade-in">
+                    <div class="about-ring"></div>
+                    <div class="about-photo-frame"><i class="fas fa-user-astronaut"></i></div>
+                    <div class="about-badge">
+                        <div class="badge-icon"><i class="fas fa-vr-cardboard"></i></div>
+                        <div class="badge-text">
+                            <h4 data-i18n="about_card_title">VR Specialist</h4>
+                            <p data-i18n="about_card_desc">Immersive experiences</p>
                         </div>
                     </div>
-                    <div class="about-text fade-in">
-                        <div class="section-label" data-i18n="section_about">About Me</div>
-                        <h3 data-i18n="about_title">Building Worlds, One Line of Code at a Time</h3>
-                        <p data-i18n="about_p1">
-                            I'm a passionate game developer with a lifelong love for video games. What started as pure enjoyment has evolved into a deep analytical approach: I study game design across all genres to become a versatile professional capable of adapting to any project.
-                        </p>
-                        <p data-i18n="about_p2">
-                            My academic journey at the University of Deusto (2021-2025) gave me a solid foundation in Computer Engineering combined with specialized training in Game Development, VR, and AR. Currently, I'm expanding my expertise through a Master's in Game Development & Design at UNIR (2025-2027), strengthening my Unity skills and building a robust foundation in Unreal Engine.
-                        </p>
-                        <div class="about-details">
-                            <div class="about-detail-item">
-                                <i class="fas fa-graduation-cap"></i>
-                                <span><strong data-i18n="detail_degree">Degree:</strong> <span data-i18n="detail_degree_val">Comp. Eng. + Game Dev</span></span>
-                            </div>
-                            <div class="about-detail-item">
-                                <i class="fas fa-code"></i>
-                                <span><strong data-i18n="detail_langs">Languages:</strong> C++, C#, Python</span>
-                            </div>
-                            <div class="about-detail-item">
-                                <i class="fas fa-cube"></i>
-                                <span><strong data-i18n="detail_engines">Engines:</strong> Unity, Unreal Engine</span>
-                            </div>
-                            <div class="about-detail-item">
-                                <i class="fas fa-language"></i>
-                                <span><strong data-i18n="detail_languages">Languages:</strong> ES, EN</span>
-                            </div>
-                        </div>
+                </div>
+                <div class="about-text fade-in">
+                    <div class="section-label" data-i18n="section_about">About Me</div>
+                    <h3 data-i18n="about_h3">Building Worlds,<br>One Line of Code at a Time</h3>
+                    <p data-i18n="about_p1">I'm a passionate game developer with a lifelong love for video games. What started as pure enjoyment has evolved into a deep analytical approach — I study game design across all genres to become a versatile professional capable of adapting to any project.</p>
+                    <p data-i18n="about_p2">My academic journey at the University of Deusto (2021–2025) gave me a solid foundation in Computer Engineering combined with specialised training in Game Development, VR, and AR. Currently expanding my expertise through a Master's at UNIR (2025–2027), deepening Unity and building a robust Unreal Engine foundation.</p>
+                    <div class="about-chips">
+                        <span class="chip"><i class="fas fa-graduation-cap"></i><span data-i18n="chip_degree">Comp. Eng. + Game Dev</span></span>
+                        <span class="chip"><i class="fas fa-code"></i>C++&nbsp;·&nbsp;C#&nbsp;·&nbsp;Python</span>
+                        <span class="chip"><i class="fas fa-cube"></i>Unity&nbsp;·&nbsp;Unreal Engine 5</span>
+                        <span class="chip"><i class="fas fa-language"></i>ES&nbsp;·&nbsp;EN</span>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Skills Section -->
-        <section class="section-padding" id="skills">
-            <div class="container">
-                <div class="section-header fade-in">
-                    <div class="section-label" data-i18n="section_skills">Skills</div>
-                    <h2 class="section-title"><span class="gradient-text" data-i18n="skills_title">Technical Arsenal</span></h2>
-                    <p class="section-subtitle" data-i18n="skills_subtitle">Tools and technologies I use to bring games to life</p>
+    <!-- ==================== SKILLS ==================== -->
+    <section class="section-pad" id="skills">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label" data-i18n="sec_skills">Skills</div>
+                <h2 class="section-title"><span class="grad-text" data-i18n="skills_title">Technical Arsenal</span></h2>
+                <p class="section-sub" data-i18n="skills_sub">Tools and technologies I use to bring games to life</p>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card fade-in">
+                    <div class="skill-head">
+                        <div class="skill-icon"><i class="fab fa-unity"></i></div>
+                        <div><h3 data-i18n="sk_engines">Game Engines</h3><p data-i18n="sk_engines_d">Primary development platforms</p></div>
+                    </div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Unity</span>
+                        <span class="skill-tag">Unreal Engine 5</span>
+                        <span class="skill-tag">VR Development</span>
+                    </div>
                 </div>
-                <div class="skills-grid">
-                    <div class="skill-card fade-in">
-                        <div class="skill-card-header">
-                            <div class="skill-icon"><i class="fab fa-unity"></i></div>
-                            <div>
-                                <h3 data-i18n="skill_engines">Game Engines</h3>
-                                <p data-i18n="skill_engines_desc">Primary development platforms</p>
-                            </div>
-                        </div>
-                        <div class="skill-tags">
-                            <span class="skill-tag">Unity</span>
-                            <span class="skill-tag">Unreal Engine 5</span>
-                            <span class="skill-tag">VR Development</span>
-                        </div>
+                <div class="skill-card fade-in">
+                    <div class="skill-head">
+                        <div class="skill-icon"><i class="fas fa-code"></i></div>
+                        <div><h3 data-i18n="sk_prog">Programming</h3><p data-i18n="sk_prog_d">Core languages & paradigms</p></div>
                     </div>
-                    <div class="skill-card fade-in">
-                        <div class="skill-card-header">
-                            <div class="skill-icon"><i class="fas fa-code"></i></div>
-                            <div>
-                                <h3 data-i18n="skill_languages">Programming</h3>
-                                <p data-i18n="skill_languages_desc">Core languages & paradigms</p>
-                            </div>
-                        </div>
-                        <div class="skill-tags">
-                            <span class="skill-tag">C#</span>
-                            <span class="skill-tag">C++</span>
-                            <span class="skill-tag">OOP</span>
-                            <span class="skill-tag">Algorithms</span>
-                        </div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">C#</span><span class="skill-tag">C++</span>
+                        <span class="skill-tag">OOP</span><span class="skill-tag">Algorithms</span>
                     </div>
-                    <div class="skill-card fade-in">
-                        <div class="skill-card-header">
-                            <div class="skill-icon"><i class="fas fa-cube"></i></div>
-                            <div>
-                                <h3 data-i18n="skill_3d">3D & Tools</h3>
-                                <p data-i18n="skill_3d_desc">Content creation pipeline</p>
-                            </div>
-                        </div>
-                        <div class="skill-tags">
-                            <span class="skill-tag">Blender</span>
-                            <span class="skill-tag">Maya</span>
-                            <span class="skill-tag">Procedural Generation</span>
-                            <span class="skill-tag">Physics Systems</span>
-                        </div>
+                </div>
+                <div class="skill-card fade-in">
+                    <div class="skill-head">
+                        <div class="skill-icon"><i class="fas fa-cube"></i></div>
+                        <div><h3 data-i18n="sk_3d">3D & Tools</h3><p data-i18n="sk_3d_d">Content creation pipeline</p></div>
                     </div>
-                    <div class="skill-card fade-in">
-                        <div class="skill-card-header">
-                            <div class="skill-icon"><i class="fas fa-brain"></i></div>
-                            <div>
-                                <h3 data-i18n="skill_ai">AI & Systems</h3>
-                                <p data-i18n="skill_ai_desc">Intelligent gameplay features</p>
-                            </div>
-                        </div>
-                        <div class="skill-tags">
-                            <span class="skill-tag">Enemy AI</span>
-                            <span class="skill-tag">Reinforcement Learning</span>
-                            <span class="skill-tag">Behavior Trees</span>
-                            <span class="skill-tag">NavMesh</span>
-                        </div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Blender</span><span class="skill-tag">Maya</span>
+                        <span class="skill-tag">Procedural Gen.</span><span class="skill-tag">Physics Systems</span>
                     </div>
-                    <div class="skill-card fade-in">
-                        <div class="skill-card-header">
-                            <div class="skill-icon"><i class="fas fa-users"></i></div>
-                            <div>
-                                <h3 data-i18n="skill_methodologies">Methodologies</h3>
-                                <p data-i18n="skill_methodologies_desc">Teamwork & project management</p>
-                            </div>
-                        </div>
-                        <div class="skill-tags">
-                            <span class="skill-tag">Agile/Scrum</span>
-                            <span class="skill-tag">Git Version Control</span>
-                            <span class="skill-tag">Task Planning</span>
-                            <span class="skill-tag">Team Communication</span>
-                        </div>
+                </div>
+                <div class="skill-card fade-in">
+                    <div class="skill-head">
+                        <div class="skill-icon"><i class="fas fa-brain"></i></div>
+                        <div><h3 data-i18n="sk_ai">AI & Systems</h3><p data-i18n="sk_ai_d">Intelligent gameplay features</p></div>
                     </div>
-                    <div class="skill-card fade-in">
-                        <div class="skill-card-header">
-                            <div class="skill-icon"><i class="fas fa-gamepad"></i></div>
-                            <div>
-                                <h3 data-i18n="skill_design">Game Design</h3>
-                                <p data-i18n="skill_design_desc">Mechanics, levels & player experience</p>
-                            </div>
-                        </div>
-                        <div class="skill-tags">
-                            <span class="skill-tag">Level Design</span>
-                            <span class="skill-tag">Combat Systems</span>
-                            <span class="skill-tag">Player Psychology</span>
-                            <span class="skill-tag">Genre Analysis</span>
-                        </div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Enemy AI</span><span class="skill-tag">Reinforcement Learning</span>
+                        <span class="skill-tag">Behavior Trees</span><span class="skill-tag">NavMesh</span>
+                    </div>
+                </div>
+                <div class="skill-card fade-in">
+                    <div class="skill-head">
+                        <div class="skill-icon"><i class="fas fa-users"></i></div>
+                        <div><h3 data-i18n="sk_meth">Methodologies</h3><p data-i18n="sk_meth_d">Teamwork & project management</p></div>
+                    </div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Agile/Scrum</span><span class="skill-tag">Git</span>
+                        <span class="skill-tag">Task Planning</span><span class="skill-tag">Team Communication</span>
+                    </div>
+                </div>
+                <div class="skill-card fade-in">
+                    <div class="skill-head">
+                        <div class="skill-icon"><i class="fas fa-gamepad"></i></div>
+                        <div><h3 data-i18n="sk_design">Game Design</h3><p data-i18n="sk_design_d">Mechanics, levels & player experience</p></div>
+                    </div>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Level Design</span><span class="skill-tag">Combat Systems</span>
+                        <span class="skill-tag">Player Psychology</span><span class="skill-tag">Genre Analysis</span>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Projects Section -->
-        <section class="projects section-padding" id="projects">
-            <div class="container">
-                <div class="section-header fade-in">
-                    <div class="section-label" data-i18n="section_portfolio">Portfolio</div>
-                    <h2 class="section-title"><span class="gradient-text" data-i18n="projects_title">Featured Projects</span></h2>
-                    <p class="section-subtitle" data-i18n="projects_subtitle">A selection of my academic and personal game development work</p>
+    <!-- ==================== PROJECTS ==================== -->
+    <section class="projects section-pad" id="projects">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label" data-i18n="sec_portfolio">Portfolio</div>
+                <h2 class="section-title"><span class="grad-text" data-i18n="proj_title">Featured Projects</span></h2>
+                <p class="section-sub" data-i18n="proj_sub">A selection of my academic and personal game development work</p>
+            </div>
+            <div class="projects-grid">
+                <!-- Rise of Darkness -->
+                <div class="proj-card fade-in">
+                    <div class="proj-thumb">
+                        <div class="proj-bg p1"><i class="fas fa-dragon"></i></div>
+                        <!-- Trailer badge -->
+                        <div class="trailer-badge"><i class="fas fa-circle" style="color:#ef4444;animation:pulse 1.2s infinite"></i> Trailer</div>
+                        <!-- Play trigger -->
+                        <div class="play-trigger" id="openVideoModal" title="Watch Trailer">
+                            <div class="play-btn-circle"><i class="fas fa-play"></i></div>
+                        </div>
+                        <!-- External links -->
+                        <div class="proj-links">
+                            <a href="https://github.com/HectorFC67" class="proj-link-btn" title="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="https://hectorfc67.itch.io" class="proj-link-btn" title="itch.io"><i class="fab fa-itch-io"></i></a>
+                        </div>
+                    </div>
+                    <div class="proj-body">
+                        <div class="proj-tags">
+                            <span class="proj-tag">VR</span>
+                            <span class="proj-tag">Unity</span>
+                            <span class="proj-tag">TFG 2025</span>
+                        </div>
+                        <h3 data-i18n="p1_title">Rise of Darkness</h3>
+                        <p data-i18n="p1_desc">VR dungeon crawler with procedural dungeon generation, physics-based sword combat using vector mesh calculations, enemy AI driven by behavior trees, and an ML agent learning through negative-reward reinforcement learning.</p>
+                    </div>
+                    <div class="proj-foot">
+                        <span><i class="fas fa-trophy"></i><span data-i18n="p1_foot">Final Degree Project</span></span>
+                        <div class="tech-icons">
+                            <i class="fab fa-unity" title="Unity"></i>
+                            <i class="fas fa-vr-cardboard" title="VR"></i>
+                            <i class="fas fa-brain" title="ML Agent"></i>
+                        </div>
+                    </div>
                 </div>
-                <div class="projects-grid">
-                    <!-- Rise of Darkness - TFG -->
-                    <div class="project-card fade-in">
-                        <div class="project-image">
-                            <div class="project-image-bg img-1">
-                                <i class="fas fa-dragon"></i>
-                            </div>
-                            <div class="project-overlay">
-                                <a href="#" class="project-overlay-btn"><i class="fas fa-play"></i></a>
-                                <a href="#" class="project-overlay-btn"><i class="fas fa-external-link-alt"></i></a>
-                            </div>
-                        </div>
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="project-tag">VR</span>
-                                <span class="project-tag">Unity</span>
-                                <span class="project-tag">TFG 2025</span>
-                            </div>
-                            <h3 data-i18n="proj_rise_title">Rise of Darkness</h3>
-                            <p data-i18n="proj_rise_desc">
-                                VR dungeon crawler featuring procedural dungeon generation, physics-based sword combat (mesh calculations using vectors), enemy AI with behavior trees, and an ML agent that learns to complete levels through negative reward reinforcement learning.
-                            </p>
-                        </div>
-                        <div class="project-footer">
-                            <span><i class="fas fa-trophy"></i> <span data-i18n="proj_rise_footer">Final Degree Project</span></span>
-                            <div class="tech-stack">
-                                <i class="fab fa-unity" title="Unity"></i>
-                                <i class="fas fa-vr-cardboard" title="VR"></i>
-                                <i class="fas fa-brain" title="ML Agent"></i>
-                            </div>
+                <!-- Unity Showcase -->
+                <div class="proj-card fade-in">
+                    <div class="proj-thumb">
+                        <div class="proj-bg p2"><i class="fas fa-rocket"></i></div>
+                        <div class="proj-links">
+                            <a href="https://github.com/HectorFC67" class="proj-link-btn" title="GitHub"><i class="fab fa-github"></i></a>
                         </div>
                     </div>
-
-                    <!-- Unity Project Example -->
-                    <div class="project-card fade-in">
-                        <div class="project-image">
-                            <div class="project-image-bg img-2">
-                                <i class="fas fa-rocket"></i>
-                            </div>
-                            <div class="project-overlay">
-                                <a href="#" class="project-overlay-btn"><i class="fas fa-play"></i></a>
-                                <a href="#" class="project-overlay-btn"><i class="fas fa-external-link-alt"></i></a>
-                            </div>
+                    <div class="proj-body">
+                        <div class="proj-tags">
+                            <span class="proj-tag">Unity</span>
+                            <span class="proj-tag">C#</span>
+                            <span class="proj-tag">Personal</span>
                         </div>
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="project-tag">Unity</span>
-                                <span class="project-tag">C#</span>
-                                <span class="project-tag">Personal</span>
-                            </div>
-                            <h3 data-i18n="proj_unity_title">Project Unity Showcase</h3>
-                            <p data-i18n="proj_unity_desc">
-                                A collection of Unity prototypes demonstrating gameplay mechanics: character controllers, inventory systems, dialogue trees, and optimization techniques for mobile and PC platforms.
-                            </p>
-                        </div>
-                        <div class="project-footer">
-                            <span><i class="fas fa-code"></i> <span data-i18n="proj_unity_footer">Solo Developer</span></span>
-                            <div class="tech-stack">
-                                <i class="fab fa-unity" title="Unity"></i>
-                                <i class="fas fa-code" title="C#"></i>
-                            </div>
+                        <h3 data-i18n="p2_title">Unity Prototypes</h3>
+                        <p data-i18n="p2_desc">A collection of Unity prototypes demonstrating gameplay mechanics: character controllers, inventory systems, dialogue trees, and optimisation techniques for mobile and PC platforms.</p>
+                    </div>
+                    <div class="proj-foot">
+                        <span><i class="fas fa-code"></i><span data-i18n="p2_foot">Solo Developer</span></span>
+                        <div class="tech-icons">
+                            <i class="fab fa-unity" title="Unity"></i>
+                            <i class="fas fa-code" title="C#"></i>
                         </div>
                     </div>
-
-                    <!-- Unreal Project Example -->
-                    <div class="project-card fade-in">
-                        <div class="project-image">
-                            <div class="project-image-bg img-3">
-                                <i class="fas fa-cube"></i>
-                            </div>
-                            <div class="project-overlay">
-                                <a href="#" class="project-overlay-btn"><i class="fas fa-play"></i></a>
-                                <a href="#" class="project-overlay-btn"><i class="fas fa-external-link-alt"></i></a>
-                            </div>
+                </div>
+                <!-- Unreal -->
+                <div class="proj-card fade-in">
+                    <div class="proj-thumb">
+                        <div class="proj-bg p3"><i class="fas fa-cube"></i></div>
+                        <div class="proj-links">
+                            <a href="https://github.com/HectorFC67" class="proj-link-btn" title="GitHub"><i class="fab fa-github"></i></a>
                         </div>
-                        <div class="project-info">
-                            <div class="project-tags">
-                                <span class="project-tag">Unreal Engine 5</span>
-                                <span class="project-tag">Blueprints</span>
-                                <span class="project-tag">Master's Project</span>
-                            </div>
-                            <h3 data-i18n="proj_unreal_title">Unreal Engine Exploration</h3>
-                            <p data-i18n="proj_unreal_desc">
-                                Projects developed during my Master's at UNIR: level design prototypes using Unreal's tools, Blueprint scripting for gameplay logic, and experiments with Niagara VFX and Lumen lighting systems.
-                            </p>
+                    </div>
+                    <div class="proj-body">
+                        <div class="proj-tags">
+                            <span class="proj-tag">Unreal Engine 5</span>
+                            <span class="proj-tag">Blueprints</span>
+                            <span class="proj-tag">Master's</span>
                         </div>
-                        <div class="project-footer">
-                            <span><i class="fas fa-graduation-cap"></i> <span data-i18n="proj_unreal_footer">Academic Work</span></span>
-                            <div class="tech-stack">
-                                <i class="fas fa-cube" title="Unreal Engine"></i>
-                                <i class="fas fa-project-diagram" title="Blueprints"></i>
-                            </div>
+                        <h3 data-i18n="p3_title">Unreal Engine Exploration</h3>
+                        <p data-i18n="p3_desc">Master's projects at UNIR: level design prototypes with Unreal's tools, Blueprint scripting for gameplay logic, and experiments with Niagara VFX and Lumen lighting systems.</p>
+                    </div>
+                    <div class="proj-foot">
+                        <span><i class="fas fa-graduation-cap"></i><span data-i18n="p3_foot">Academic Work</span></span>
+                        <div class="tech-icons">
+                            <i class="fas fa-cube" title="Unreal Engine"></i>
+                            <i class="fas fa-project-diagram" title="Blueprints"></i>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Experience/Education Section -->
-        <section class="section-padding" id="experience">
-            <div class="container">
-                <div class="section-header fade-in">
-                    <div class="section-label" data-i18n="section_education">Education</div>
-                    <h2 class="section-title"><span class="gradient-text" data-i18n="education_title">Academic Journey</span></h2>
-                    <p class="section-subtitle" data-i18n="education_subtitle">My path to becoming a game developer</p>
+    <!-- ==================== EDUCATION ==================== -->
+    <section class="section-pad" id="education">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label" data-i18n="sec_edu">Education</div>
+                <h2 class="section-title"><span class="grad-text" data-i18n="edu_title">Academic Journey</span></h2>
+                <p class="section-sub" data-i18n="edu_sub">My path to becoming a game developer</p>
+            </div>
+            <div class="timeline">
+                <div class="tl-item fade-in">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <span class="tl-date">2025 – 2027</span>
+                        <h3 data-i18n="tl1_h">Master in Game Development & Design</h3>
+                        <h4 data-i18n="tl1_s">UNIR — Universidad Internacional de La Rioja</h4>
+                        <p data-i18n="tl1_p">Deepening expertise in Unity, building a solid Unreal Engine foundation, and developing a new perspective on level design: understanding not just what mechanics are possible, but why design decisions are made and how they serve the player experience.</p>
+                    </div>
                 </div>
-                <div class="timeline">
-                    <div class="timeline-item fade-in">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <span class="timeline-date">2025 - 2027</span>
-                            <h3 data-i18n="edu_master_title">Master in Game Development & Design</h3>
-                            <h4 data-i18n="edu_master_school">UNIR - Universidad Internacional de La Rioja</h4>
-                            <p data-i18n="edu_master_desc">
-                                Deepening expertise in Unity, building a solid foundation in Unreal Engine, and developing a new perspective on level design: understanding not just what mechanics are possible, but why design decisions are made and how they serve the player experience.
-                            </p>
-                        </div>
+                <div class="tl-item fade-in">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <span class="tl-date">2025</span>
+                        <h3 data-i18n="tl2_h">Final Degree Project: Rise of Darkness</h3>
+                        <h4 data-i18n="tl2_s">University of Deusto</h4>
+                        <p data-i18n="tl2_p">VR game in Unity implementing procedural dungeon generation, physics-based sword combat (vector mesh calculations), enemy AI, and an ML agent that learns through negative rewards. Multiple advanced systems integrated into a cohesive experience.</p>
                     </div>
-                    <div class="timeline-item fade-in">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <span class="timeline-date">2025</span>
-                            <h3 data-i18n="edu_tfg_title">Final Degree Project: Rise of Darkness</h3>
-                            <h4 data-i18n="edu_tfg_school">University of Deusto</h4>
-                            <p data-i18n="edu_tfg_desc">
-                                VR game in Unity implementing procedural dungeon generation, physics-based sword combat (vector mesh calculations), enemy AI, and an ML agent that learns through negative rewards. Integrated multiple advanced systems into a cohesive experience.
-                            </p>
-                        </div>
+                </div>
+                <div class="tl-item fade-in">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <span class="tl-date">2021 – 2025</span>
+                        <h3 data-i18n="tl3_h">Computer Engineering + Game Development, VR & AR</h3>
+                        <h4 data-i18n="tl3_s">University of Deusto</h4>
+                        <p data-i18n="tl3_p">Specialised track in Video Game Development, VR & AR. Gained proficiency in Unity, Blender, Maya, C++, C# and collaborative methodologies. Learned team communication, task planning, and dependency management through group projects.</p>
                     </div>
-                    <div class="timeline-item fade-in">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <span class="timeline-date">2021 - 2025</span>
-                            <h3 data-i18n="edu_degree_title">Computer Engineering + Game Development, VR & AR</h3>
-                            <h4 data-i18n="edu_degree_school">University of Deusto</h4>
-                            <p data-i18n="edu_degree_desc">
-                                Specialized track in Video Game Development, VR & AR. Gained proficiency in Unity, Blender, Maya, C++, C#, and collaborative methodologies. Learned team communication, task planning, and dependency management through group projects.
-                            </p>
-                        </div>
-                    </div>                
-                    <div class="timeline-item fade-in">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <span class="timeline-date">2018 - Present</span>
-                            <h3 data-i18n="edu_passion_title">Lifelong Gaming Passion</h3>
-                            <h4 data-i18n="edu_passion_school">Self-Directed Learning</h4>
-                            <p data-i18n="edu_passion_desc">
-                                From childhood enjoyment to professional analysis: I actively study game design across all genres, deconstructing mechanics and design choices to build a versatile skillset adaptable to any project or team.
-                            </p>
-                        </div>
+                </div>
+                <div class="tl-item fade-in">
+                    <div class="tl-dot"></div>
+                    <div class="tl-card">
+                        <span class="tl-date">2018 – Present</span>
+                        <h3 data-i18n="tl4_h">Lifelong Gaming Passion</h3>
+                        <h4 data-i18n="tl4_s">Self-Directed Learning</h4>
+                        <p data-i18n="tl4_p">From childhood enjoyment to professional analysis: actively studying game design across all genres, deconstructing mechanics and design decisions to build a versatile skillset adaptable to any project or team.</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Contact Section -->
-        <section class="contact section-padding" id="contact">
-            <div class="container">
-                <div class="section-header fade-in">
-                    <div class="section-label" data-i18n="section_contact">Contact</div>
-                    <h2 class="section-title"><span class="gradient-text" data-i18n="contact_title">Let's Create Something Amazing</span></h2>
-                    <p class="section-subtitle" data-i18n="contact_subtitle">Open to internships, junior positions, and collaborative projects</p>
+    <!-- ==================== CONTACT ==================== -->
+    <section class="contact section-pad" id="contact">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label" data-i18n="sec_contact">Contact</div>
+                <h2 class="section-title"><span class="grad-text" data-i18n="contact_title">Let's Create Something Amazing</span></h2>
+                <p class="section-sub" data-i18n="contact_sub">Open to internships, junior positions, and collaborative projects</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-info fade-in">
+                    <h3 data-i18n="contact_h3">Let's talk about your next project</h3>
+                    <p data-i18n="contact_p">Whether you're looking for a junior developer passionate about gameplay systems, someone with VR experience, or a team player who understands both technical implementation and design rationale — I'd love to hear from you.</p>
+                    <div class="c-methods">
+                        <a href="mailto:hector.2003fc@gmail.com" class="c-method">
+                            <div class="c-method-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="c-method-txt"><h4>Email</h4><p>hector.2003fc@gmail.com</p></div>
+                        </a>
+                        <a href="https://github.com/HectorFC67" target="_blank" rel="noopener" class="c-method">
+                            <div class="c-method-icon"><i class="fab fa-github"></i></div>
+                            <div class="c-method-txt"><h4>GitHub</h4><p>github.com/HectorFC67</p></div>
+                        </a>
+                        <a href="https://es.linkedin.com/in/h%C3%A9ctor-fern%C3%A1ndez-cort%C3%A9s-4174b6270" target="_blank" rel="noopener" class="c-method">
+                            <div class="c-method-icon"><i class="fab fa-linkedin-in"></i></div>
+                            <div class="c-method-txt"><h4>LinkedIn</h4><p>Héctor Fernández Cortés</p></div>
+                        </a>
+                    </div>
+                    <div class="social-row">
+                        <a href="https://github.com/HectorFC67" target="_blank" rel="noopener" class="social-btn"><i class="fab fa-github"></i></a>
+                        <a href="https://es.linkedin.com/in/h%C3%A9ctor-fern%C3%A1ndez-cort%C3%A9s-4174b6270" target="_blank" rel="noopener" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://hectorfc67.itch.io" target="_blank" rel="noopener" class="social-btn"><i class="fab fa-itch-io"></i></a>
+                        <a href="mailto:hector.2003fc@gmail.com" class="social-btn"><i class="fas fa-envelope"></i></a>
+                    </div>
                 </div>
-                <div class="contact-grid">
-                    <div class="contact-info fade-in">
-                        <h3 data-i18n="contact_intro">Let's talk about your next project</h3>
-                        <p data-i18n="contact_intro_p">
-                            Whether you're looking for a junior developer passionate about gameplay systems, someone with VR experience, or a team player who understands both technical implementation and design rationale — I'd love to hear from you.
-                        </p>
-                        <div class="contact-methods">
-                            <div class="contact-method">
-                                <div class="contact-method-icon"><i class="fas fa-envelope"></i></div>
-                                <div class="contact-method-text">
-                                    <h4 data-i18n="contact_email_title">Email</h4>
-                                    <p>hector.2003fc@gmail.com</p>
-                                </div>
-                            </div>
-                            <div class="contact-method">
-                                <div class="contact-method-icon"><i class="fab fa-github"></i></div>
-                                <div class="contact-method-text">
-                                    <h4 data-i18n="contact_github_title">GitHub</h4>
-                                    <p>github.com/HectorFC67</p>
-                                </div>
-                            </div>
+
+                <!-- 
+                    FORMULARIO: Para activarlo realmente, regístrate gratis en https://formspree.io
+                    y sustituye "YOUR_FORM_ID" por tu ID real.
+                -->
+                <form class="c-form fade-in" id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                    <div class="form-row">
+                        <div class="form-grp">
+                            <label for="name" data-i18n="form_name">Name</label>
+                            <input type="text" id="name" name="name" placeholder="John Doe" required>
                         </div>
-                        <div class="social-links">
-                            <a href="https://github.com/HectorFC67" class="social-link"><i class="fab fa-github"></i></a>
-                            <a href="https://es.linkedin.com/in/h%C3%A9ctor-fern%C3%A1ndez-cort%C3%A9s-4174b6270" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="https://hectorfc67.itch.io" class="social-link"><i class="fab fa-itch-io"></i></a>
+                        <div class="form-grp">
+                            <label for="email" data-i18n="form_email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="john@studio.com" required>
                         </div>
                     </div>
-                    <form class="contact-form fade-in" id="contactForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="name" data-i18n="form_name">Name</label>
-                                <input type="text" id="name" placeholder="Héctor Fernández" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="email" data-i18n="form_email">Email</label>
-                                <input type="email" id="email" placeholder="hector.2003fc@gmail.com" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="subject" data-i18n="form_subject">Subject</label>
-                            <input type="text" id="subject" placeholder="What's this about?">
-                        </div>
-                        <div class="form-group">
-                            <label for="message" data-i18n="form_message">Message</label>
-                            <textarea id="message" placeholder="Tell me about your project or opportunity..." required></textarea>
-                        </div>
-                        <button type="submit" class="btn-submit">
-                            <i class="fas fa-paper-plane"></i> <span data-i18n="form_send">Send Message</span>
-                        </button>
-                    </form>
+                    <div class="form-grp">
+                        <label for="subject" data-i18n="form_subject">Subject</label>
+                        <input type="text" id="subject" name="subject" placeholder="Junior position / Collaboration...">
+                    </div>
+                    <div class="form-grp">
+                        <label for="message" data-i18n="form_message">Message</label>
+                        <textarea id="message" name="message" placeholder="Tell me about your project or opportunity..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i>
+                        <span data-i18n="form_send">Send Message</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer>
+        <p>&copy; 2026 <span class="g">Héctor Fernández</span>. <span data-i18n="footer_text">All rights reserved — made with</span> <i class="fas fa-heart" style="color:#f472b6"></i> <span data-i18n="footer_coffee">and lots of coffee.</span></p>
+    </footer>
+
+    <button class="back-top" id="backTop"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- ==================== VIDEO MODAL ==================== -->
+    <!--
+        📁 INSTRUCCIONES:
+        Pon tu archivo de vídeo en la misma carpeta que este index.html
+        y renómbralo a: trailer-rise-of-darkness.mp4
+
+        Estructura de carpetas en GitHub:
+        HectorFC67.github.io/
+        ├── index.html
+        └── trailer-rise-of-darkness.mp4   ← aquí
+
+        ⚠️ GitHub tiene un límite de 100 MB por archivo.
+        Si tu vídeo pesa más, usa Git LFS o sube a YouTube/Vimeo
+        y cámbia el <video> por un <iframe>.
+    -->
+    <div class="video-modal-overlay" id="videoModalOverlay">
+        <div class="video-modal" id="videoModal" role="dialog" aria-modal="true" aria-label="Rise of Darkness Trailer">
+            <!-- Header -->
+            <div class="video-modal-header">
+                <div class="video-modal-title">
+                    <i class="fas fa-dragon"></i>
+                    <span>Rise of Darkness</span>
+                    <div class="video-modal-tags">
+                        <span class="video-modal-tag">VR</span>
+                        <span class="video-modal-tag">Unity</span>
+                        <span class="video-modal-tag">TFG 2025</span>
+                    </div>
+                </div>
+                <button class="video-modal-close" id="closeVideoModal" aria-label="Close"><i class="fas fa-times"></i></button>
+            </div>
+
+            <!-- Video -->
+            <div class="video-wrap">
+                <!--
+                    Cambia "trailer-rise-of-darkness.mp4" por el nombre exacto de tu archivo.
+                    Puedes añadir más formatos con <source> para mejor compatibilidad.
+                -->
+                <video id="trailerVideo" controls preload="metadata" poster="">
+                    <source src="trailer-rise-of-darkness.mp4" type="video/mp4">
+                    Tu navegador no soporta vídeo HTML5.
+                </video>
+                <!-- Este placeholder se oculta automáticamente si el vídeo carga bien -->
+                <div class="video-placeholder" id="videoPlaceholder" style="display:none">
+                    <i class="fas fa-film"></i>
+                    <p>Vídeo no encontrado. Asegúrate de que el archivo está en la misma carpeta que el <code>index.html</code> con el nombre <code>trailer-rise-of-darkness.mp4</code></p>
                 </div>
             </div>
-        </section>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>&copy; 2026 <span class="gradient-text" data-i18n="footer_name">Héctor Fernández</span>. <span data-i18n="footer_text">All rights reserved. Made with</span> <i class="fas fa-heart" style="color: #ef4444;"></i> <span data-i18n="footer_coffee">and lots of coffee.</span></p>
-        </footer>
+            <!-- Footer -->
+            <div class="video-modal-footer">
+                <p data-i18n="modal_desc">Final Degree Project — University of Deusto, 2025</p>
+                <a href="https://hectorfc67.itch.io" target="_blank" rel="noopener">
+                    <i class="fab fa-itch-io"></i>
+                    <span data-i18n="modal_play">Play on itch.io</span>
+                </a>
+            </div>
+        </div>
+    </div>
 
-        <!-- Back to top -->
-        <button class="back-to-top" id="backToTop">
-            <i class="fas fa-arrow-up"></i>
-        </button>
+    <!-- ===================== SCRIPTS ===================== -->
+    <script>
+    /* ========= TRANSLATIONS ========= */
+    const T = {
+    en: {
+    nav_about:"About", nav_skills:"Skills", nav_projects:"Projects", nav_edu:"Education", nav_contact:"Contact",
+    hero_badge:"Open to new opportunities", hero_greeting:"Hi, I'm",
+    hero_desc:"Creating immersive interactive experiences with passion for programming, design, and storytelling. Specialised in Unity and Unreal Engine — focused on gameplay systems, procedural generation and AI.",
+    btn_projects:"View Projects", btn_contact:"Get in Touch",
+    stat_years:"Years Learning", stat_projects:"Projects", stat_degrees:"Degrees",
+    scroll_cue:"scroll",
+    section_about:"About Me", about_h3:"Building Worlds,\nOne Line of Code at a Time",
+    about_p1:"I'm a passionate game developer with a lifelong love for video games. What started as pure enjoyment has evolved into a deep analytical approach — I study game design across all genres to become a versatile professional capable of adapting to any project.",
+    about_p2:"My academic journey at the University of Deusto (2021–2025) gave me a solid foundation in Computer Engineering combined with specialised training in Game Development, VR, and AR. Currently expanding my expertise through a Master's at UNIR (2025–2027), deepening Unity and building a robust Unreal Engine foundation.",
+    about_card_title:"VR Specialist", about_card_desc:"Immersive experiences", chip_degree:"Comp. Eng. + Game Dev",
+    sec_skills:"Skills", skills_title:"Technical Arsenal", skills_sub:"Tools and technologies I use to bring games to life",
+    sk_engines:"Game Engines", sk_engines_d:"Primary development platforms",
+    sk_prog:"Programming", sk_prog_d:"Core languages & paradigms",
+    sk_3d:"3D & Tools", sk_3d_d:"Content creation pipeline",
+    sk_ai:"AI & Systems", sk_ai_d:"Intelligent gameplay features",
+    sk_meth:"Methodologies", sk_meth_d:"Teamwork & project management",
+    sk_design:"Game Design", sk_design_d:"Mechanics, levels & player experience",
+    sec_portfolio:"Portfolio", proj_title:"Featured Projects", proj_sub:"A selection of my academic and personal game development work",
+    p1_title:"Rise of Darkness", p1_desc:"VR dungeon crawler with procedural dungeon generation, physics-based sword combat using vector mesh calculations, enemy AI driven by behavior trees, and an ML agent learning through negative-reward reinforcement learning.", p1_foot:"Final Degree Project",
+    p2_title:"Unity Prototypes", p2_desc:"A collection of Unity prototypes demonstrating gameplay mechanics: character controllers, inventory systems, dialogue trees, and optimisation techniques for mobile and PC platforms.", p2_foot:"Solo Developer",
+    p3_title:"Unreal Engine Exploration", p3_desc:"Master's projects at UNIR: level design prototypes with Unreal's tools, Blueprint scripting for gameplay logic, and experiments with Niagara VFX and Lumen lighting systems.", p3_foot:"Academic Work",
+    sec_edu:"Education", edu_title:"Academic Journey", edu_sub:"My path to becoming a game developer",
+    tl1_h:"Master in Game Development & Design", tl1_s:"UNIR — Universidad Internacional de La Rioja", tl1_p:"Deepening expertise in Unity, building a solid Unreal Engine foundation, and developing a new perspective on level design: understanding not just what mechanics are possible, but why design decisions are made and how they serve the player experience.",
+    tl2_h:"Final Degree Project: Rise of Darkness", tl2_s:"University of Deusto", tl2_p:"VR game in Unity implementing procedural dungeon generation, physics-based sword combat (vector mesh calculations), enemy AI, and an ML agent that learns through negative rewards. Multiple advanced systems integrated into a cohesive experience.",
+    tl3_h:"Computer Engineering + Game Development, VR & AR", tl3_s:"University of Deusto", tl3_p:"Specialised track in Video Game Development, VR & AR. Gained proficiency in Unity, Blender, Maya, C++, C# and collaborative methodologies. Learned team communication, task planning, and dependency management through group projects.",
+    tl4_h:"Lifelong Gaming Passion", tl4_s:"Self-Directed Learning", tl4_p:"From childhood enjoyment to professional analysis: actively studying game design across all genres, deconstructing mechanics and design decisions to build a versatile skillset adaptable to any project or team.",
+    sec_contact:"Contact", contact_title:"Let's Create Something Amazing", contact_sub:"Open to internships, junior positions, and collaborative projects",
+    contact_h3:"Let's talk about your next project", contact_p:"Whether you're looking for a junior developer passionate about gameplay systems, someone with VR experience, or a team player who understands both technical implementation and design rationale — I'd love to hear from you.",
+    form_name:"Name", form_email:"Email", form_subject:"Subject", form_message:"Message", form_send:"Send Message",
+    footer_text:"All rights reserved — made with", footer_coffee:"and lots of coffee.",
+    modal_desc:"Final Degree Project — University of Deusto, 2025", modal_play:"Play on itch.io"
+    },
+    es: {
+    nav_about:"Sobre mí", nav_skills:"Habilidades", nav_projects:"Proyectos", nav_edu:"Formación", nav_contact:"Contacto",
+    hero_badge:"Disponible para nuevos proyectos", hero_greeting:"Hola, soy",
+    hero_desc:"Creo experiencias interactivas inmersivas con pasión por la programación, el diseño y la narrativa. Especializado en Unity y Unreal Engine — con foco en sistemas de gameplay, generación procedural e IA.",
+    btn_projects:"Ver Proyectos", btn_contact:"Contactar",
+    stat_years:"Años Formándome", stat_projects:"Proyectos", stat_degrees:"Títulos",
+    scroll_cue:"bajar",
+    section_about:"Sobre mí", about_h3:"Construyendo Mundos,\nLínea a Línea",
+    about_p1:"Soy un desarrollador de videojuegos apasionado con un amor de toda la vida por los juegos. Lo que comenzó como puro disfrute ha evolucionado hacia un enfoque analítico profundo: estudio diseño de juegos en todos los géneros para convertirme en un profesional versátil capaz de adaptarme a cualquier proyecto.",
+    about_p2:"Mi formación en la Universidad de Deusto (2021–2025) me dio una base sólida en Ingeniería Informática combinada con especialización en Desarrollo de Videojuegos, VR y AR. Actualmente amplío mi experiencia con el Máster en Desarrollo y Diseño de Videojuegos en UNIR (2025–2027), reforzando Unity y construyendo una base robusta en Unreal Engine.",
+    about_card_title:"Especialista VR", about_card_desc:"Experiencias inmersivas", chip_degree:"Ing. Inf. + Videojuegos",
+    sec_skills:"Habilidades", skills_title:"Arsenal Tecnológico", skills_sub:"Herramientas y tecnologías que uso para dar vida a los videojuegos",
+    sk_engines:"Motores", sk_engines_d:"Plataformas principales de desarrollo",
+    sk_prog:"Programación", sk_prog_d:"Lenguajes y paradigmas principales",
+    sk_3d:"3D y Herramientas", sk_3d_d:"Pipeline de creación de contenido",
+    sk_ai:"IA y Sistemas", sk_ai_d:"Características inteligentes de gameplay",
+    sk_meth:"Metodologías", sk_meth_d:"Trabajo en equipo y gestión de proyectos",
+    sk_design:"Diseño de Juegos", sk_design_d:"Mecánicas, niveles y experiencia del jugador",
+    sec_portfolio:"Portfolio", proj_title:"Proyectos Destacados", proj_sub:"Selección de mi trabajo académico y personal en desarrollo de videojuegos",
+    p1_title:"Rise of Darkness", p1_desc:"Dungeon crawler en VR con generación procedural de mazmorras, combate con espada basado en físicas (cálculo de mallas usando vectores), IA de enemigos con behavior trees y un agente de ML que aprende mediante aprendizaje por refuerzo con recompensas negativas.", p1_foot:"Proyecto Fin de Grado",
+    p2_title:"Prototipos Unity", p2_desc:"Colección de prototipos en Unity que demuestran mecánicas de gameplay: controladores de personaje, sistemas de inventario, árboles de diálogo y técnicas de optimización para móvil y PC.", p2_foot:"Desarrollador Único",
+    p3_title:"Exploración de Unreal Engine", p3_desc:"Proyectos del Máster en UNIR: prototipos de level design con herramientas de Unreal, scripting en Blueprints para lógica de gameplay, y experimentos con Niagara VFX y el sistema de iluminación Lumen.", p3_foot:"Trabajo Académico",
+    sec_edu:"Formación", edu_title:"Trayectoria Académica", edu_sub:"Mi camino para convertirme en desarrollador de videojuegos",
+    tl1_h:"Máster en Desarrollo y Diseño de Videojuegos", tl1_s:"UNIR — Universidad Internacional de La Rioja", tl1_p:"Profundizando en Unity, construyendo una base sólida en Unreal Engine y desarrollando una nueva perspectiva sobre el diseño de niveles: entendiendo no solo qué mecánicas son posibles, sino por qué se toman ciertas decisiones de diseño y cómo sirven a la experiencia del jugador.",
+    tl2_h:"TFG: Rise of Darkness", tl2_s:"Universidad de Deusto", tl2_p:"Videojuego VR en Unity con generación procedural de mazmorras, combate basado en físicas (cálculo de mallas con vectores), IA de enemigos y un agente de ML que aprende mediante recompensas negativas. Múltiples sistemas avanzados integrados en una experiencia cohesionada.",
+    tl3_h:"Ingeniería Informática + Desarrollo de Videojuegos, VR y AR", tl3_s:"Universidad de Deusto", tl3_p:"Itinerario especializado en Desarrollo de Videojuegos, VR y AR. Adquirí competencia en Unity, Blender, Maya, C++, C# y metodologías colaborativas. Aprendí comunicación en equipo, planificación de tareas y gestión de dependencias mediante proyectos grupales.",
+    tl4_h:"Pasión por los Videojuegos", tl4_s:"Aprendizaje Autónomo", tl4_p:"Del disfrute infantil al análisis profesional: estudio activamente diseño de juegos en todos los géneros, deconstruyendo mecánicas y decisiones de diseño para construir un conjunto de habilidades versátil y adaptable a cualquier proyecto o equipo.",
+    sec_contact:"Contacto", contact_title:"Creemos Algo Épico Juntos", contact_sub:"Abierto a prácticas, posiciones junior y proyectos colaborativos",
+    contact_h3:"Hablemos de tu próximo proyecto", contact_p:"Ya sea que busques un desarrollador junior apasionado por sistemas de gameplay, alguien con experiencia en VR, o un jugador de equipo que entienda tanto la implementación técnica como la justificación del diseño — me encantaría saber de ti.",
+    form_name:"Nombre", form_email:"Email", form_subject:"Asunto", form_message:"Mensaje", form_send:"Enviar Mensaje",
+    footer_text:"Todos los derechos reservados — hecho con", footer_coffee:"y mucho café.",
+    modal_desc:"Proyecto Fin de Grado — Universidad de Deusto, 2025", modal_play:"Jugar en itch.io"
+    }
+    };
 
-        <script>
-            // ===== MULTILINGUAL SYSTEM =====
-            const translations = {
-                en: {
-                    // Navigation
-                    nav_about: "About", nav_skills: "Skills", nav_projects: "Projects",
-                    nav_experience: "Education", nav_contact: "Contact",
-                    // Hero
-                    hero_badge: "Open to new opportunities", hero_greeting: "Hi, I'm",
-                    hero_name: "Héctor Fernández", hero_role: "Game Developer",
-                    hero_desc: "Creating immersive interactive experiences with passion for programming, design, and storytelling. Specialized in Unity and Unreal Engine with a focus on gameplay systems, procedural generation, and AI.",
-                    btn_projects: "View Projects", btn_contact: "Get in Touch",
-                    stat_years: "Years Learning", stat_projects: "Personal Projects", stat_degrees: "Degrees",
-                    // About
-                    section_about: "About Me", about_title: "Building Worlds, One Line of Code at a Time",
-                    about_p1: "I'm a passionate game developer with a lifelong love for video games. What started as pure enjoyment has evolved into a deep analytical approach: I study game design across all genres to become a versatile professional capable of adapting to any project.",
-                    about_p2: "My academic journey at the University of Deusto (2021-2025) gave me a solid foundation in Computer Engineering combined with specialized training in Game Development, VR, and AR. Currently, I'm expanding my expertise through a Master's in Game Development & Design at UNIR (2025-2027), strengthening my Unity skills and building a robust foundation in Unreal Engine.",
-                    about_card_title: "VR Specialist", about_card_desc: "Immersive experiences",
-                    detail_degree: "Degree:", detail_degree_val: "Comp. Eng. + Game Dev",
-                    detail_langs: "Languages:", detail_engines: "Engines:", detail_languages: "Spoken:",
-                    // Skills
-                    section_skills: "Skills", skills_title: "Technical Arsenal",
-                    skills_subtitle: "Tools and technologies I use to bring games to life",
-                    skill_engines: "Game Engines", skill_engines_desc: "Primary development platforms",
-                    skill_languages: "Programming", skill_languages_desc: "Core languages & paradigms",
-                    skill_3d: "3D & Tools", skill_3d_desc: "Content creation pipeline",
-                    skill_ai: "AI & Systems", skill_ai_desc: "Intelligent gameplay features",
-                    skill_methodologies: "Methodologies", skill_methodologies_desc: "Teamwork & project management",
-                    skill_design: "Game Design", skill_design_desc: "Mechanics, levels & player experience",
-                    // Projects
-                    section_portfolio: "Portfolio", projects_title: "Featured Projects",
-                    projects_subtitle: "A selection of my academic and personal game development work",
-                    proj_rise_title: "Rise of Darkness", proj_rise_desc: "VR dungeon crawler featuring procedural dungeon generation, physics-based sword combat (mesh calculations using vectors), enemy AI with behavior trees, and an ML agent that learns to complete levels through negative reward reinforcement learning.",
-                    proj_rise_footer: "Final Degree Project",
-                    proj_unity_title: "Project Unity Showcase", proj_unity_desc: "A collection of Unity prototypes demonstrating gameplay mechanics: character controllers, inventory systems, dialogue trees, and optimization techniques for mobile and PC platforms.",
-                    proj_unity_footer: "Solo Developer",
-                    proj_unreal_title: "Unreal Engine Exploration", proj_unreal_desc: "Projects developed during my Master's at UNIR: level design prototypes using Unreal's tools, Blueprint scripting for gameplay logic, and experiments with Niagara VFX and Lumen lighting systems.",
-                    proj_unreal_footer: "Academic Work",
-                    // Education
-                    section_education: "Education", education_title: "Academic Journey",
-                    education_subtitle: "My path to becoming a game developer",
-                    edu_master_title: "Master in Game Development & Design",
-                    edu_master_school: "UNIR - Universidad Internacional de La Rioja",
-                    edu_master_desc: "Deepening expertise in Unity, building a solid foundation in Unreal Engine, and developing a new perspective on level design: understanding not just what mechanics are possible, but why design decisions are made and how they serve the player experience.",
-                    edu_degree_title: "Computer Engineering + Game Development",
-                    edu_degree_school: "University of Deusto",
-                    edu_degree_desc: "Specialized track in Video Game Development, VR & AR. Gained proficiency in Unity, Blender, Maya, C++, C#, and collaborative methodologies. Learned team communication, task planning, and dependency management through group projects.",
-                    edu_tfg_title: "Final Degree Project: Rise of Darkness",
-                    edu_tfg_school: "University of Deusto",
-                    edu_tfg_desc: "VR game in Unity implementing procedural dungeon generation, physics-based sword combat (vector mesh calculations), enemy AI, and an ML agent that learns through negative rewards. Integrated multiple advanced systems into a cohesive experience.",
-                    edu_passion_title: "Lifelong Gaming Passion",
-                    edu_passion_school: "Self-Directed Learning",
-                    edu_passion_desc: "From childhood enjoyment to professional analysis: I actively study game design across all genres, deconstructing mechanics and design choices to build a versatile skillset adaptable to any project or team.",
-                    // Contact
-                    section_contact: "Contact", contact_title: "Let's Create Something Amazing",
-                    contact_subtitle: "Open to internships, junior positions, and collaborative projects",
-                    contact_intro: "Let's talk about your next project",
-                    contact_intro_p: "Whether you're looking for a junior developer passionate about gameplay systems, someone with VR experience, or a team player who understands both technical implementation and design rationale — I'd love to hear from you.",
-                    contact_email_title: "Email", contact_linkedin_title: "LinkedIn", contact_github_title: "GitHub",
-                    form_name: "Name", form_email: "Email", form_subject: "Subject", form_message: "Message", form_send: "Send Message",
-                    // Footer
-                    footer_name: "Héctor Fernández", footer_text: "All rights reserved. Made with", footer_coffee: "and lots of coffee."
-                },
-                es: {
-                    // Navigation
-                    nav_about: "Sobre mí", nav_skills: "Habilidades", nav_projects: "Proyectos",
-                    nav_experience: "Formación", nav_contact: "Contacto",
-                    // Hero
-                    hero_badge: "Disponible para nuevos proyectos", hero_greeting: "Hola, soy",
-                    hero_name: "Héctor Fernández", hero_role: "Desarrollador de Videojuegos",
-                    hero_desc: "Creo experiencias interactivas inmersivas con pasión por la programación, el diseño y la narrativa. Especializado en Unity y Unreal Engine, con foco en sistemas de gameplay, generación procedural e IA.",
-                    btn_projects: "Ver Proyectos", btn_contact: "Contactar",
-                    stat_years: "Años Formándome", stat_projects: "Proyectos Personales", stat_degrees: "Títulos",
-                    // About
-                    section_about: "Sobre mí", about_title: "Construyendo Mundos, Línea a Línea",
-                    about_p1: "Soy un desarrollador de videojuegos apasionado con un amor de toda la vida por los juegos. Lo que comenzó como puro disfrute ha evolucionado hacia un enfoque analítico profundo: estudio diseño de juegos en todos los géneros para convertirme en un profesional versátil capaz de adaptarme a cualquier proyecto.",
-                    about_p2: "Mi formación en la Universidad de Deusto (2021-2025) me dio una base sólida en Ingeniería Informática combinada con especialización en Desarrollo de Videojuegos, VR y AR. Actualmente, amplío mi experiencia con el Máster en Desarrollo y Diseño de Videojuegos en UNIR (2025-2027), reforzando Unity y construyendo una base robusta en Unreal Engine.",
-                    about_card_title: "Especialista VR", about_card_desc: "Experiencias inmersivas",
-                    detail_degree: "Titulación:", detail_degree_val: "Ing. Inf. + Videojuegos",
-                    detail_langs: "Lenguajes:", detail_engines: "Motores:", detail_languages: "Idiomas:",
-                    // Skills
-                    section_skills: "Habilidades", skills_title: "Arsenal Tecnológico",
-                    skills_subtitle: "Herramientas y tecnologías que uso para dar vida a los videojuegos",
-                    skill_engines: "Motores", skill_engines_desc: "Plataformas principales de desarrollo",
-                    skill_languages: "Programación", skill_languages_desc: "Lenguajes y paradigmas principales",
-                    skill_3d: "3D y Herramientas", skill_3d_desc: "Pipeline de creación de contenido",
-                    skill_ai: "IA y Sistemas", skill_ai_desc: "Características inteligentes de gameplay",
-                    skill_methodologies: "Metodologías", skill_methodologies_desc: "Trabajo en equipo y gestión",
-                    skill_design: "Diseño de Juegos", skill_design_desc: "Mecánicas, niveles y experiencia de jugador",
-                    // Projects
-                    section_portfolio: "Portfolio", projects_title: "Proyectos Destacados",
-                    projects_subtitle: "Selección de mi trabajo académico y personal en desarrollo de videojuegos",
-                    proj_rise_title: "Rise of Darkness", proj_rise_desc: "Dungeon crawler en VR con generación procedural de mazmorras, combate con espada basado en físicas (cálculo de mallas usando vectores), IA de enemigos con behavior trees, y un agente de ML que aprende a superar niveles mediante aprendizaje por refuerzo con recompensas negativas.",
-                    proj_rise_footer: "Proyecto Fin de Grado",
-                    proj_unity_title: "Showcase de Proyectos Unity", proj_unity_desc: "Colección de prototipos en Unity que demuestran mecánicas de gameplay: controladores de personaje, sistemas de inventario, árboles de diálogo y técnicas de optimización para móvil y PC.",
-                    proj_unity_footer: "Desarrollador Único",
-                    proj_unreal_title: "Exploración de Unreal Engine", proj_unreal_desc: "Proyectos desarrollados durante mi Máster en UNIR: prototipos de level design con herramientas de Unreal, scripting en Blueprints para lógica de gameplay, y experimentos con Niagara VFX y el sistema de iluminación Lumen.",
-                    proj_unreal_footer: "Trabajo Académico",
-                    // Education
-                    section_education: "Formación", education_title: "Mi Trayectoria Académica",
-                    education_subtitle: "Mi camino para convertirme en desarrollador de videojuegos",
-                    edu_master_title: "Máster en Desarrollo y Diseño de Videojuegos",
-                    edu_master_school: "UNIR - Universidad Internacional de La Rioja",
-                    edu_master_desc: "Profundizando en Unity, construyendo una base sólida en Unreal Engine, y desarrollando una nueva perspectiva sobre el diseño de niveles: entendiendo no solo qué mecánicas son posibles, sino por qué se toman ciertas decisiones de diseño y cómo sirven a la experiencia del jugador.",
-                    edu_degree_title: "Ingeniería Informática + Desarrollo de Videojuegos, VR y AR",
-                    edu_degree_school: "Universidad de Deusto",
-                    edu_degree_desc: "Itinerario especializado en Desarrollo de Videojuegos, VR y AR. Adquirí competencia en Unity, Blender, Maya, C++, C# y metodologías colaborativas. Aprendí comunicación en equipo, planificación de tareas y gestión de dependencias mediante proyectos grupales.",
-                    edu_tfg_title: "TFG: Rise of Darkness",
-                    edu_tfg_school: "Universidad de Deusto",
-                    edu_tfg_desc: "Videojuego VR en Unity que implementa generación procedural de mazmorras, combate con espada basado en físicas (cálculo de mallas con vectores), IA de enemigos y un agente de ML que aprende mediante recompensas negativas. Integración de múltiples sistemas avanzados en una experiencia cohesionada.",
-                    edu_passion_title: "Pasión por los Videojuegos",
-                    edu_passion_school: "Aprendizaje Autónomo",
-                    edu_passion_desc: "Del disfrute infantil al análisis profesional: estudio activamente diseño de juegos en todos los géneros, deconstruyendo mecánicas y decisiones de diseño para construir un conjunto de habilidades versátil y adaptable a cualquier proyecto o equipo.",
-                    // Contact
-                    section_contact: "Contacto", contact_title: "Creemos Algo Épico Juntos",
-                    contact_subtitle: "Abierto a prácticas, posiciones junior y proyectos colaborativos",
-                    contact_intro: "Hablemos de tu próximo proyecto",
-                    contact_intro_p: "Ya sea que busques un desarrollador junior apasionado por sistemas de gameplay, alguien con experiencia en VR, o un jugador de equipo que entienda tanto la implementación técnica como la justificación del diseño, me encantaría saber de ti.",
-                    contact_email_title: "Email", contact_linkedin_title: "LinkedIn", contact_github_title: "GitHub",
-                    form_name: "Nombre", form_email: "Email", form_subject: "Asunto", form_message: "Mensaje", form_send: "Enviar Mensaje",
-                    // Footer
-                    footer_name: "Héctor Fernández", footer_text: "Todos los derechos reservados. Hecho con", footer_coffee: "y mucho café."
-                }
-            };
+    let lang = 'en';
+    function setLang(l) {
+        lang = l;
+        document.documentElement.lang = l;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const k = el.dataset.i18n, v = T[l][k];
+            if (!v) return;
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = v;
+            else el.textContent = v;
+        });
+        localStorage.setItem('hfc-lang', l);
+        // re-run typewriter with new lang
+        startTypewriter();
+    }
 
-            let currentLang = 'en';
+    /* ========= TYPEWRITER ========= */
+    const twRoles = {
+        en: ['Game Developer', 'VR Specialist', 'Unity Expert', 'Level Designer'],
+        es: ['Desarrollador de Juegos', 'Especialista VR', 'Experto en Unity', 'Level Designer']
+    };
+    let twIdx = 0, twCharIdx = 0, twDeleting = false, twTimer = null;
+    function startTypewriter() {
+        clearTimeout(twTimer);
+        twIdx = 0; twCharIdx = 0; twDeleting = false;
+        document.getElementById('typewriter').textContent = '';
+        typeStep();
+    }
+    function typeStep() {
+        const roles = twRoles[lang];
+        const word = roles[twIdx % roles.length];
+        if (!twDeleting) {
+            twCharIdx++;
+            document.getElementById('typewriter').textContent = word.slice(0, twCharIdx);
+            if (twCharIdx === word.length) { twDeleting = true; twTimer = setTimeout(typeStep, 2000); return; }
+        } else {
+            twCharIdx--;
+            document.getElementById('typewriter').textContent = word.slice(0, twCharIdx);
+            if (twCharIdx === 0) { twDeleting = false; twIdx++; twTimer = setTimeout(typeStep, 300); return; }
+        }
+        twTimer = setTimeout(typeStep, twDeleting ? 45 : 80);
+    }
 
-            function setLanguage(lang) {
-                currentLang = lang;
-                document.documentElement.lang = lang;
-                
-                // Update language buttons
-                document.querySelectorAll('.lang-btn').forEach(btn => {
-                    btn.classList.toggle('active', btn.dataset.lang === lang);
-                });
-                
-                // Update all translatable elements
-                document.querySelectorAll('[data-i18n]').forEach(el => {
-                    const key = el.dataset.i18n;
-                    if (translations[lang][key]) {
-                        if (el.placeholder !== undefined) {
-                            el.placeholder = translations[lang][key];
-                        } else {
-                            el.textContent = translations[lang][key];
-                        }
-                    }
-                });
-                
-                // Save preference
-                localStorage.setItem('portfolio-lang', lang);
+    /* ========= CUSTOM CURSOR ========= */
+    const dot  = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mx = -100, my = -100, rx = -100, ry = -100;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animCursor() {
+        dot.style.left  = mx + 'px'; dot.style.top  = my + 'px';
+        rx += (mx - rx) * .12;  ry += (my - ry) * .12;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        requestAnimationFrame(animCursor);
+    })();
+
+    /* ========= PARTICLES ========= */
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [], pmx = 0, pmy = 0;
+    function resizeCanvas() { canvas.width = innerWidth; canvas.height = innerHeight; }
+    resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+    class P {
+        constructor() { this.reset(); }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.sz = Math.random() * 1.8 + .4;
+            this.vx = (Math.random() - .5) * .4;
+            this.vy = (Math.random() - .5) * .4;
+            this.op = Math.random() * .4 + .08;
+            this.col = Math.random() > .55 ? '123,92,250' : '34,211,238';
+        }
+        tick() {
+            this.x += this.vx; this.y += this.vy;
+            const dx = pmx - this.x, dy = pmy - this.y, d = Math.hypot(dx, dy);
+            if (d < 140) { this.x -= dx * .008; this.y -= dy * .008; }
+            if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+        }
+        draw() {
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.sz, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(${this.col},${this.op})`; ctx.fill();
+        }
+    }
+    function initP() { particles = Array.from({length: Math.min(70, ~~(innerWidth/18))}, () => new P()); }
+    initP();
+    function drawLines() {
+        for (let i = 0; i < particles.length; i++)
+            for (let j = i+1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, d = Math.hypot(dx,dy);
+                if (d < 110) { ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.strokeStyle=`rgba(123,92,250,${.08*(1-d/110)})`; ctx.lineWidth=.5; ctx.stroke(); }
             }
+    }
+    function animP() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.tick();p.draw();}); drawLines(); requestAnimationFrame(animP); }
+    animP();
+    document.addEventListener('mousemove', e => { pmx = e.clientX; pmy = e.clientY; });
 
-            // Initialize language
-            document.addEventListener('DOMContentLoaded', () => {
-                const savedLang = localStorage.getItem('portfolio-lang') || 'en';
-                setLanguage(savedLang);
-                
-                // Language toggle listeners
-                document.querySelectorAll('.lang-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        setLanguage(e.target.dataset.lang);
-                    });
+    /* ========= NAVBAR ========= */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', scrollY > 60));
+
+    /* ========= MOBILE NAV ========= */
+    const navLinks = document.getElementById('navLinks');
+    document.getElementById('navToggle').addEventListener('click', () => navLinks.classList.add('open'));
+    document.getElementById('navClose').addEventListener('click', () => navLinks.classList.remove('open'));
+    function closeNav() { navLinks.classList.remove('open'); }
+
+    /* ========= BACK TO TOP ========= */
+    const bt = document.getElementById('backTop');
+    window.addEventListener('scroll', () => bt.classList.toggle('show', scrollY > 500));
+    bt.addEventListener('click', () => scrollTo({top:0,behavior:'smooth'}));
+
+    /* ========= FADE IN (Intersection Observer) ========= */
+    const io = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), {threshold:.1,rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+    /* ========= COUNTER ANIMATION ========= */
+    let counted = false;
+    const cio = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting && !counted) {
+                counted = true;
+                document.querySelectorAll('.stat-num').forEach(el => {
+                    const t = +el.dataset.count;
+                    let c = 0, step = t/50;
+                    const tm = setInterval(() => { c += step; if (c >= t) { el.textContent = t + '+'; clearInterval(tm); } else el.textContent = ~~c; }, 35);
                 });
-            });
-
-            // ===== PARTICLE CANVAS (same as original) =====
-            const canvas = document.getElementById('particleCanvas');
-            const ctx = canvas.getContext('2d');
-            let particles = [];
-            let mouseX = 0, mouseY = 0;
-
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
             }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
+        });
+    }, {threshold:.5});
+    document.querySelectorAll('.stat-num').forEach(el => cio.observe(el));
 
-            class Particle {
-                constructor() { this.reset(); }
-                reset() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.size = Math.random() * 2 + 0.5;
-                    this.speedX = (Math.random() - 0.5) * 0.5;
-                    this.speedY = (Math.random() - 0.5) * 0.5;
-                    this.opacity = Math.random() * 0.5 + 0.1;
-                    this.color = Math.random() > 0.5 ? '124, 58, 237' : '6, 182, 212';
-                }
-                update() {
-                    this.x += this.speedX; this.y += this.speedY;
-                    const dx = mouseX - this.x, dy = mouseY - this.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 150) { this.x -= dx * 0.01; this.y -= dy * 0.01; }
-                    if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-                }
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
-                    ctx.fill();
-                }
-            }
+    /* ========= CONTACT FORM (Formspree-ready, local feedback) ========= */
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
+        const action = this.action;
+        // If Formspree ID hasn't been set, prevent and show feedback
+        if (action.includes('YOUR_FORM_ID')) {
+            e.preventDefault();
+            const btn = this.querySelector('.btn-submit');
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> ' + (lang === 'es' ? '¡Enviado! (configura Formspree)' : 'Sent! (configure Formspree)');
+            btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+            setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; this.reset(); }, 3500);
+            return;
+        }
+        // Real Formspree submit (AJAX)
+        e.preventDefault();
+        const btn = this.querySelector('.btn-submit');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        try {
+            const res = await fetch(action, { method:'POST', body: new FormData(this), headers:{'Accept':'application/json'} });
+            if (res.ok) {
+                btn.innerHTML = '<i class="fas fa-check"></i> ' + (lang === 'es' ? '¡Enviado!' : 'Sent!');
+                btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+                this.reset();
+            } else { throw new Error(); }
+        } catch {
+            btn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+            btn.style.background = 'linear-gradient(135deg,#ef4444,#b91c1c)';
+        }
+        setTimeout(() => { btn.innerHTML = '<i class="fas fa-paper-plane"></i> ' + T[lang].form_send; btn.style.background = ''; btn.disabled = false; }, 3500);
+    });
 
-            function initParticles() {
-                const count = Math.min(80, Math.floor(window.innerWidth / 15));
-                particles = [];
-                for (let i = 0; i < count; i++) particles.push(new Particle());
-            }
-            initParticles();
+    /* ========= INIT ========= */
+    document.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem('hfc-lang') || 'en';
+        document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', e => setLang(e.target.dataset.lang)));
+        setLang(saved);
+    });
 
-            function drawConnections() {
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i + 1; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < 120) {
-                            ctx.beginPath();
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.strokeStyle = `rgba(124, 58, 237, ${0.1 * (1 - dist / 120)})`;
-                            ctx.lineWidth = 0.5; ctx.stroke();
-                        }
-                    }
-                }
-            }
+    /* ========= VIDEO MODAL ========= */
+    const overlay   = document.getElementById('videoModalOverlay');
+    const video     = document.getElementById('trailerVideo');
+    const placeholder = document.getElementById('videoPlaceholder');
 
-            function animateParticles() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach(p => { p.update(); p.draw(); });
-                drawConnections();
-                requestAnimationFrame(animateParticles);
-            }
-            animateParticles();
-            document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+    // Detect if video file is actually available
+    video.addEventListener('error', () => {
+        video.style.display = 'none';
+        placeholder.style.display = 'flex';
+    });
+    video.addEventListener('loadedmetadata', () => {
+        placeholder.style.display = 'none';
+        video.style.display = 'block';
+    });
 
-            // ===== OTHER INTERACTIONS (navbar, scroll, etc.) =====
-            const navbar = document.getElementById('navbar');
-            window.addEventListener('scroll', () => {
-                navbar.classList.toggle('scrolled', window.scrollY > 50);
-            });
+    function openModal() {
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        // Try to play only if video loaded
+        if (video.readyState >= 1) video.play().catch(() => {});
+    }
+    function closeModal() {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+        video.pause();
+    }
 
-            // Mobile nav
-            const navToggle = document.getElementById('navToggle');
-            const navClose = document.getElementById('navClose');
-            const navLinks = document.getElementById('navLinks');
-            navToggle?.addEventListener('click', () => navLinks?.classList.add('active'));
-            navClose?.addEventListener('click', () => navLinks?.classList.remove('active'));
-            function closeNav() { navLinks?.classList.remove('active'); }
+    document.getElementById('openVideoModal').addEventListener('click', openModal);
+    document.getElementById('closeVideoModal').addEventListener('click', closeModal);
 
-            // Back to top
-            const backToTop = document.getElementById('backToTop');
-            window.addEventListener('scroll', () => {
-                backToTop?.classList.toggle('visible', window.scrollY > 500);
-            });
-            backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    // Close on overlay click (outside modal box)
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
 
-            // Scroll animations
-            const fadeElements = document.querySelectorAll('.fade-in');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-            fadeElements.forEach(el => observer.observe(el));
-
-            // Counter animation
-            const counters = document.querySelectorAll('.stat-number');
-            let countersAnimated = false;
-            const counterObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !countersAnimated) {
-                        countersAnimated = true;
-                        counters.forEach(counter => {
-                            const target = parseInt(counter.getAttribute('data-count'));
-                            let current = 0, increment = target / 60;
-                            const timer = setInterval(() => {
-                                current += increment;
-                                if (current >= target) { counter.textContent = target + '+'; clearInterval(timer); }
-                                else counter.textContent = Math.floor(current);
-                            }, 30);
-                        });
-                    }
-                });
-            }, { threshold: 0.5 });
-            counters.forEach(c => counterObserver.observe(c));
-
-            // Contact form
-            const contactForm = document.getElementById('contactForm');
-            contactForm?.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const btn = contactForm.querySelector('.btn-submit');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i> ' + (currentLang === 'es' ? '¡Enviado!' : 'Sent!');
-                btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-                setTimeout(() => {
-                    btn.innerHTML = originalText; btn.style.background = ''; contactForm.reset();
-                }, 3000);
-            });
-
-            // Active nav link on scroll
-            const sections = document.querySelectorAll('section[id]');
-            window.addEventListener('scroll', () => {
-                let current = '';
-                sections.forEach(section => {
-                    const sectionTop = section.offsetTop - 100;
-                    if (window.scrollY >= sectionTop) current = section.getAttribute('id');
-                });
-                document.querySelectorAll('.nav-links a').forEach(link => {
-                    link.style.color = '';
-                    if (link.getAttribute('href') === '#' + current) link.style.color = 'var(--text-primary)';
-                });
-            });
-        </script>
+    // Close on Escape key
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal(); });
+    </script>
     </body>
 </html>
